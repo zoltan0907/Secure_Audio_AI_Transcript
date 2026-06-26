@@ -1,10 +1,12 @@
-// Erhöhe diese Versionsnummer bei JEDER Änderung an der index.html!
-const CACHE_NAME = 'audio-ai-es-v4'; 
+// Version auf v5 erhöht, um Cache-Reset zu erzwingen
+const CACHE_NAME = 'audio-ai-es-v5'; 
 
 const urlsToCache = [
     './',
     './index.html',
-    './manifest.json'
+    './manifest.json',
+    './icon-192.png',
+    './icon-512.png'
 ];
 
 self.addEventListener('install', event => {
@@ -15,7 +17,7 @@ self.addEventListener('install', event => {
     );
 });
 
-// NEU: Alte Caches beim Aktivieren löschen
+// Alte Caches beim Aktivieren löschen
 self.addEventListener('activate', event => {
     event.waitUntil(
         caches.keys().then(cacheNames => {
@@ -28,7 +30,7 @@ self.addEventListener('activate', event => {
                     }
                 })
             );
-        }).then(() => self.clients.claim()) // Übernimmt sofort die Kontrolle über alle offenen Tabs
+        }).then(() => self.clients.claim()) // Übernimmt sofort die Kontrolle
     );
 });
 
