@@ -44,6 +44,7 @@
         .text-warning { color: var(--warning); }
         .text-success { color: var(--success); }
         .text-danger { color: var(--danger); }
+        .text-primary { color: var(--primary); }
         .font-medium { font-weight: 500; }
         .font-bold { font-weight: 700; }
 
@@ -63,6 +64,7 @@
         .btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
         .btn-outline { background: white; color: var(--text-main); border: 1px solid #e2e8f0; }
         .btn-outline:hover { background: #f8fafc; }
+        .btn-small { padding: 0.4rem 0.8rem; font-size: 0.75rem; border-radius: 4px; }
 
         .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.9); display: flex; align-items: center; justify-content: center; padding: 1rem; z-index: 50; }
         .login-box { background: white; padding: 2rem; border-radius: var(--radius-xl); width: 100%; max-width: 28rem; text-align: center; box-shadow: var(--shadow-lg); }
@@ -84,6 +86,7 @@
         .search-input { width: 100%; padding: 1rem 1rem 1rem 2.5rem; border-radius: var(--radius-lg); border: none; box-shadow: var(--shadow-md); background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); outline: none; font-size: 1rem; }
         .search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 1.25rem; height: 1.25rem; color: var(--text-light); pointer-events: none; }
 
+        /* Recording Cards */
         .record-card { background: white; border-radius: var(--radius-xl); padding: 1.25rem; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem; transition: box-shadow 0.2s; }
         .record-card:hover { box-shadow: var(--shadow-md); }
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; }
@@ -94,42 +97,33 @@
         .tags { display: flex; flex-wrap: wrap; gap: 0.25rem; justify-content: flex-end; }
         .tag { background: var(--tag-bg); color: var(--tag-text); border: 1px solid #dbeafe; font-size: 0.65rem; padding: 0.2rem 0.5rem; border-radius: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
         
+        .icon-btn { background: none; border: none; color: var(--text-light); cursor: pointer; padding: 0.25rem; border-radius: 0.25rem; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+        .icon-btn:hover { background: #f1f5f9; color: var(--text-main); }
+        .icon-btn.danger-hover:hover { background: #fee2e2; color: var(--danger); }
+        .icon-btn svg { width: 1.1rem; height: 1.1rem; }
+
         .add-tag-btn { background: none; border: 1px dashed var(--text-light); color: var(--text-light); border-radius: 1rem; padding: 0.1rem 0.5rem; font-size: 0.6rem; font-weight: 700; cursor: pointer; text-transform: uppercase; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
         .add-tag-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--tag-bg); }
+        
+        /* Modal Tags */
         .tag-interactive { cursor: pointer; user-select: none; transition: all 0.2s; opacity: 0.6; border-style: dashed; }
         .tag-interactive:hover { opacity: 0.8; }
         .tag-interactive.active { opacity: 1; border-style: solid; background: var(--primary); color: white; border-color: var(--primary); }
 
-        .delete-btn { background: none; border: none; color: var(--text-light); cursor: pointer; padding: 0.25rem; border-radius: 0.25rem; transition: all 0.2s; display: flex; align-items: center; justify-content: center; margin-left: auto; }
-        .delete-btn:hover { background: #fee2e2; color: var(--danger); }
-        .delete-btn svg { width: 1.1rem; height: 1.1rem; }
-
         .section-title { font-size: 0.7rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.25rem; }
         .section-title svg { width: 0.875rem; height: 0.875rem; }
         .transcript-text { font-size: 0.875rem; color: var(--text-muted); font-style: italic; border-left: 3px solid var(--border-color); padding-left: 0.75rem; }
-        .audio-wrapper { margin-top: 0.5rem; padding-top: 1rem; border-top: 1px solid var(--border-color); background: var(--bg-body); border-radius: var(--radius-md); overflow: hidden; }
+        
+        .audio-wrapper { margin-top: 0.25rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color); background: var(--bg-body); border-radius: var(--radius-md); overflow: hidden; }
         audio { width: 100%; height: 2.5rem; outline: none; opacity: 0.9; }
 
-        .processing-indicator { display: flex; flex-direction: column; align-items: center; margin-top: 1.5rem; }
-        .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--primary); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; margin-bottom: 0.5rem; }
-        .processing-text { font-size: 0.875rem; color: var(--primary); font-weight: 500; background: #eff6ff; padding: 0.25rem 1rem; border-radius: 1rem; }
+        /* Status Panels in Cards */
+        .status-panel { background: var(--bg-body); border-radius: var(--radius-md); padding: 1.25rem 1rem; display: flex; flex-direction: column; gap: 0.75rem; align-items: center; justify-content: center; text-align: center; margin-top: 0.5rem; border: 1px dashed var(--border-color); }
+        .status-panel.error { background: #fef2f2; border-color: #fecaca; }
+        
+        .loader-small { border: 2px solid #e2e8f0; border-top: 2px solid var(--primary); border-radius: 50%; width: 18px; height: 18px; animation: spin 1s linear infinite; }
         .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-muted); background: white; border-radius: var(--radius-xl); border: 2px dashed var(--border-color); }
         .empty-state svg { width: 3rem; height: 3rem; color: #cbd5e1; margin: 0 auto 1rem auto; }
-
-        /* --- TASK QUEUE --- */
-        .task-list { list-style: none; padding: 0; margin: 0; }
-        .task-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--border-color); }
-        .task-item:last-child { border-bottom: none; padding-bottom: 0; }
-        .task-info { display: flex; flex-direction: column; gap: 0.2rem; }
-        .task-date { font-size: 0.875rem; font-weight: 600; color: var(--text-main); }
-        .task-status { font-size: 0.75rem; display: flex; align-items: center; gap: 0.3rem; font-weight: 600;}
-        .status-pending { color: var(--warning); }
-        .status-processing { color: var(--primary); }
-        .status-error { color: var(--danger); }
-        .task-actions { display: flex; gap: 0.5rem; }
-        .task-btn { background: none; border: 1px solid var(--border-color); border-radius: 4px; font-size: 0.7rem; padding: 0.2rem 0.5rem; cursor: pointer; color: var(--text-muted); font-weight: 600; transition: all 0.2s;}
-        .task-btn:hover { background: var(--bg-body); color: var(--text-main); }
-        .task-btn-danger:hover { background: #fee2e2; color: var(--danger); border-color: #fca5a5; }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
@@ -194,30 +188,28 @@
             </div>
         </header>
 
+        <!-- RECORD AREA -->
         <section class="card record-area">
-            <!-- Das "disabled" Attribut wurde entfernt -->
             <button id="record-btn" class="record-btn">
                 <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
             </button>
-            <!-- Der Text ist nun von Anfang an korrekt gesetzt -->
             <p id="record-status" class="text-muted font-medium" style="margin-top: 1rem;">Bereit für Aufnahme</p>
         </section>
 
-        <!-- TASK QUEUE SECTION -->
-        <section id="task-queue-section" class="card hidden" style="margin-bottom: 1.5rem;">
-            <h3 class="section-title" style="margin-bottom: 1rem;">
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-                Verarbeitungsschlange
-            </h3>
-            <ul id="task-list" class="task-list">
-                <!-- Dynamische Tasks -->
-            </ul>
-        </section>
-
+        <!-- SEARCH -->
         <section class="search-container">
             <svg class="search-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg>
             <input type="text" id="search-input" placeholder="In Transkripten und Keywords suchen..." class="search-input">
         </section>
+
+        <!-- LIST HEADER -->
+        <div class="flex justify-between items-center mb-4 px-2">
+            <h2 class="text-sm font-bold text-slate-500 uppercase tracking-wider">Aufnahmen</h2>
+            <button id="process-queue-btn" class="btn btn-primary btn-small hidden flex items-center gap-1 shadow-sm">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                Verarbeitung anstoßen
+            </button>
+        </div>
 
         <section id="recordings-list"></section>
     </div>
@@ -240,18 +232,15 @@
         let isRecording = false;
         let inMemoryData = []; 
         let isProcessingQueue = false;
-        let inMemoryTasks = [];
 
         const ui = {
             loginScreen: document.getElementById('login-screen'),
             mainApp: document.getElementById('main-app'),
             passwordInput: document.getElementById('password-input'),
             loginBtn: document.getElementById('login-btn'),
-            aiStatus: document.getElementById('ai-status'),
             recordBtn: document.getElementById('record-btn'),
             recordStatus: document.getElementById('record-status'),
-            taskQueueSection: document.getElementById('task-queue-section'),
-            taskList: document.getElementById('task-list'),
+            processQueueBtn: document.getElementById('process-queue-btn'),
             recordingsList: document.getElementById('recordings-list'),
             searchInput: document.getElementById('search-input'),
             exportBtn: document.getElementById('export-btn'),
@@ -304,38 +293,14 @@
 
         function initDB() {
             return new Promise((resolve, reject) => {
-                const request = indexedDB.open("SecureAudioDB_ES", 2); // Version erhöht für neue Tabelle
+                const request = indexedDB.open("SecureAudioDB_ES", 3); // DB Version 3
                 request.onupgradeneeded = (e) => {
                     const db = e.target.result;
                     if (!db.objectStoreNames.contains("recordings")) db.createObjectStore("recordings", { keyPath: "id" });
-                    if (!db.objectStoreNames.contains("tasks")) db.createObjectStore("tasks", { keyPath: "id" });
+                    // Optional: Alte tasks Tabelle könnte hier gelöscht werden, wir ignorieren sie einfach.
                 };
                 request.onsuccess = (e) => resolve(e.target.result);
                 request.onerror = (e) => reject(e.target.error);
-            });
-        }
-
-        // --- TASK DB HELPERS ---
-        async function saveTaskToDB(id, encryptedObj) {
-            return new Promise((resolve, reject) => {
-                const tx = db.transaction("tasks", "readwrite");
-                tx.objectStore("tasks").put({ id: id, iv: encryptedObj.iv, data: encryptedObj.cipherBuffer });
-                tx.oncomplete = () => resolve(); tx.onerror = () => reject(tx.error);
-            });
-        }
-
-        async function loadAllTasksFromDB() {
-            return new Promise((resolve, reject) => {
-                const req = db.transaction("tasks", "readonly").objectStore("tasks").getAll();
-                req.onsuccess = () => resolve(req.result); req.onerror = () => reject(req.error);
-            });
-        }
-
-        async function deleteTaskFromDB(id) {
-            return new Promise((resolve, reject) => {
-                const tx = db.transaction("tasks", "readwrite");
-                tx.objectStore("tasks").delete(id);
-                tx.oncomplete = () => resolve(); tx.onerror = () => reject(tx.error);
             });
         }
 
@@ -363,9 +328,17 @@
             });
         }
 
+        async function clearDB() {
+            return new Promise((resolve) => {
+                const tx = db.transaction("recordings", "readwrite");
+                tx.objectStore("recordings").clear();
+                tx.oncomplete = () => resolve();
+            });
+        }
+
         // --- GEMINI API HELPERS ---
-        async function fetchWithRetry(url, options, retries = 5) {
-            const delays = [1000, 2000, 4000, 8000, 16000];
+        async function fetchWithRetry(url, options, retries = 3) {
+            const delays = [2000, 4000, 8000];
             for (let i = 0; i < retries; i++) {
                 try {
                     const response = await fetch(url, options);
@@ -378,24 +351,33 @@
             }
         }
 
-        // --- TASK SCHEDULER & PIPELINE ---
-        async function enqueueAudio(blob) {
-            ui.recordStatus.innerText = "Speichere Aufgabe...";
+        // --- NEW: INTELLIGENTE PIPELINE DIREKT AUF RECORDINGS ---
+        
+        async function saveNewRecording(blob) {
+            ui.recordStatus.innerText = "Speichere Audio lokal...";
             try {
                 const audioBase64 = bufferToBase64(await blob.arrayBuffer());
-                const taskPayload = {
+                
+                // Wir speichern die Aufnahme sofort, markieren sie aber als 'pending' (ausstehend)
+                const payload = {
                     date: new Date().toISOString(),
                     audioMime: blob.type,
                     audioData: audioBase64,
+                    transcript: "",
+                    summary: "",
+                    keywords: [],
                     status: 'pending',
                     errorMsg: ''
                 };
                 
-                const taskId = `task_${Date.now()}`;
-                await saveTaskToDB(taskId, await encryptData(taskPayload));
+                const id = Date.now().toString();
+                await saveRecordingToDB(id, await encryptData(payload));
                 
-                await refreshTaskQueueUI();
-                processTaskQueue(); // Hintergrundprozess anstoßen
+                // Sofortiges UI Update, damit der Nutzer sein Audio sieht
+                await refreshDataAndUI();
+                
+                // Hintergrund-Task anstoßen
+                processPendingRecordings();
             } catch (err) {
                 alert("Fehler beim Speichern der Audio-Aufgabe: " + err.message);
             } finally {
@@ -403,32 +385,31 @@
             }
         }
 
-        async function processTaskQueue() {
-            if (isProcessingQueue) return; // Verhindert parallele Ausführung
+        async function processPendingRecordings() {
+            if (isProcessingQueue) return; 
             isProcessingQueue = true;
 
             try {
                 while (true) {
-                    await refreshTaskQueueUI(); // Aktuellen Zustand laden
-                    const nextTask = inMemoryTasks.find(t => t.status === 'pending');
-                    
-                    if (!nextTask) break; // Keine wartenden Aufgaben mehr
+                    // Suche eine Aufnahme, die auf Verarbeitung wartet
+                    const nextId = inMemoryData.find(r => r.status === 'pending')?.id;
+                    if (!nextId) break; // Keine Aufgaben mehr da!
 
-                    // 1. Status auf "Verarbeite" setzen
-                    nextTask.status = 'processing';
-                    await saveTaskToDB(nextTask.id, await encryptData({
-                        date: nextTask.date, audioMime: nextTask.audioMime, audioData: nextTask.audioData, status: 'processing', errorMsg: ''
-                    }));
-                    renderTaskQueue(); // UI aktualisieren
+                    // Referenz holen & UI auf "Verarbeite..." stellen
+                    const rIndex = inMemoryData.findIndex(r => r.id === nextId);
+                    inMemoryData[rIndex].status = 'processing';
+                    await saveRecordingToDB(nextId, await encryptData(inMemoryData[rIndex]));
+                    renderRecordings(ui.searchInput.value); // UI Update
 
-                    // 2. An Gemini senden
+                    // An Gemini senden
                     try {
-                        const mimeType = nextTask.audioMime.split(';')[0] || 'audio/webm';
+                        const rec = inMemoryData[rIndex];
+                        const mimeType = rec.audioMime.split(';')[0] || 'audio/webm';
                         const payload = {
                             contents: [{
                                 parts: [
                                     { text: "Bitte höre dir diese Audioaufnahme an. 1. Transkribiere den gesprochenen Text präzise auf Deutsch. 2. Erstelle eine kurze, logische Zusammenfassung der Kernpunkte. 3. Extrahiere bis zu 5 relevante Schlagworte (Keywords). Formatiere die Antwort strikt als JSON." },
-                                    { inlineData: { mimeType: mimeType, data: nextTask.audioData } }
+                                    { inlineData: { mimeType: mimeType, data: rec.audioData } }
                                 ]
                             }],
                             generationConfig: {
@@ -453,42 +434,32 @@
                         });
 
                         const textResponse = result.candidates?.[0]?.content?.parts?.[0]?.text;
-                        if (!textResponse) throw new Error("Keine gültige Antwort von Gemini erhalten.");
+                        if (!textResponse) throw new Error("Keine gültige Antwort erhalten.");
                         const aiData = JSON.parse(textResponse);
 
-                        // 3. Erfolgreich: Als Aufnahme speichern
-                        const dbPayload = {
-                            date: nextTask.date,
-                            transcript: aiData.transcript || "Kein Transkript generiert.",
-                            summary: aiData.summary || "Keine Zusammenfassung generiert.",
-                            keywords: aiData.keywords || [],
-                            audioMime: nextTask.audioMime,
-                            audioData: nextTask.audioData
-                        };
-
-                        // Aufnahme-ID ist Task-ID ohne Prefix
-                        await saveRecordingToDB(nextTask.id.replace('task_', ''), await encryptData(dbPayload));
+                        // Erfolgreich: Daten aktualisieren und Status auf "done" setzen
+                        inMemoryData[rIndex].transcript = aiData.transcript || "Kein Text erkannt.";
+                        inMemoryData[rIndex].summary = aiData.summary || "Keine Zusammenfassung.";
+                        inMemoryData[rIndex].keywords = aiData.keywords || [];
+                        inMemoryData[rIndex].status = 'done';
                         
-                        // 4. Aus Task-Queue löschen
-                        await deleteTaskFromDB(nextTask.id);
-                        
-                        // Hauptliste aktualisieren
-                        await refreshDataAndUI();
+                        await saveRecordingToDB(nextId, await encryptData(inMemoryData[rIndex]));
 
                     } catch (taskError) {
-                        // Fehlerfall: Task als Fehlerhaft markieren, damit User ihn manuell wiederholen kann
-                        nextTask.status = 'error';
-                        nextTask.errorMsg = taskError.message;
-                        await saveTaskToDB(nextTask.id, await encryptData({
-                            date: nextTask.date, audioMime: nextTask.audioMime, audioData: nextTask.audioData, status: 'error', errorMsg: taskError.message
-                        }));
+                        // Fehlerfall: Status auf Error setzen, damit der Nutzer es manuell wiederholen kann
+                        inMemoryData[rIndex].status = 'error';
+                        inMemoryData[rIndex].errorMsg = taskError.message;
+                        await saveRecordingToDB(nextId, await encryptData(inMemoryData[rIndex]));
                     }
+                    
+                    // UI nach jedem Durchlauf aktualisieren
+                    renderRecordings(ui.searchInput.value);
                 }
             } finally {
                 isProcessingQueue = false;
-                renderTaskQueue(); // Finale UI Aktualisierung
             }
         }
+
 
         // --- EVENTS & UI ---
         ui.loginBtn.addEventListener('click', async () => {
@@ -500,9 +471,9 @@
                 ui.loginScreen.classList.add('hidden'); ui.mainApp.classList.remove('hidden');
                 
                 await refreshDataAndUI();
-                await refreshTaskQueueUI(); // Lade abgebrochene Tasks
                 
-                processTaskQueue(); // Starte Warteschlange nach Login
+                // Hintergrundverarbeitung anstoßen, falls beim Schließen der App noch alte Tasks warteten oder auf Fehler liefen
+                processPendingRecordings();
             } catch (error) { alert("Startfehler: " + error.message); } 
             finally { ui.loginBtn.innerText = "Entschlüsseln & Öffnen"; ui.loginBtn.disabled = false; }
         });
@@ -517,7 +488,7 @@
                     
                     mediaRecorder.onstop = async () => {
                         stream.getTracks().forEach(track => track.stop());
-                        await enqueueAudio(new Blob(audioChunks, { type: 'audio/webm' }));
+                        await saveNewRecording(new Blob(audioChunks, { type: 'audio/webm' }));
                     };
                     mediaRecorder.start();
                     isRecording = true;
@@ -531,13 +502,37 @@
             }
         });
 
+        ui.processQueueBtn.addEventListener('click', async () => {
+            ui.processQueueBtn.disabled = true;
+            let needsUpdate = false;
+            
+            // Setze alle fehlgeschlagenen Aufgaben wieder auf 'pending'
+            for (let r of inMemoryData) {
+                if (r.status === 'error') {
+                    r.status = 'pending';
+                    r.errorMsg = '';
+                    await saveRecordingToDB(r.id, await encryptData(r));
+                    needsUpdate = true;
+                }
+            }
+            
+            // UI aktualisieren, falls sich Status geändert haben
+            if (needsUpdate) renderRecordings(ui.searchInput.value.toLowerCase());
+            
+            // Verarbeitungsschleife starten
+            await processPendingRecordings();
+            ui.processQueueBtn.disabled = false;
+        });
+
         // --- TAG EDITOR LOGIK ---
         let currentEditRecordId = null;
         let currentEditTags = [];
 
         function getAllUniqueTags() {
             const allTags = new Set();
-            inMemoryData.forEach(record => record.keywords.forEach(k => allTags.add(k)));
+            inMemoryData.forEach(record => {
+                if(record.keywords) record.keywords.forEach(k => allTags.add(k));
+            });
             return Array.from(allTags).sort();
         }
 
@@ -567,7 +562,8 @@
 
         function openTagModal(id) {
             currentEditRecordId = id;
-            currentEditTags = [...inMemoryData.find(r => r.id === id).keywords];
+            const rec = inMemoryData.find(r => r.id === id);
+            currentEditTags = rec.keywords ? [...rec.keywords] : [];
             ui.tagFilterInput.value = '';
             renderTagModalList();
             ui.tagModal.classList.remove('hidden');
@@ -582,47 +578,22 @@
 
         ui.tagCloseBtn.onclick = () => { ui.tagModal.classList.add('hidden'); currentEditRecordId = null; };
 
-        // Event Delegation für Task Queue Buttons (Wiederholen / Löschen)
-        ui.taskList.addEventListener('click', async (e) => {
-            const btn = e.target.closest('.task-btn');
-            if (!btn) return;
-            
-            const taskId = btn.getAttribute('data-task-id');
-            const action = btn.getAttribute('data-action');
-
-            if (action === 'retry') {
-                // Task auf Pending zurücksetzen
-                const task = inMemoryTasks.find(t => t.id === taskId);
-                if(task) {
-                    task.status = 'pending';
-                    await saveTaskToDB(task.id, await encryptData({
-                        date: task.date, audioMime: task.audioMime, audioData: task.audioData, status: 'pending', errorMsg: ''
-                    }));
-                    processTaskQueue();
-                }
-            } else if (action === 'delete') {
-                if (confirm("Möchtest du diese fehlerhafte Aufgabe löschen? (Audio geht verloren)")) {
-                    await deleteTaskFromDB(taskId);
-                    await refreshTaskQueueUI();
-                }
-            }
-        });
-
         ui.tagSaveBtn.onclick = async () => {
             if (!currentEditRecordId) return;
             const rIndex = inMemoryData.findIndex(r => r.id === currentEditRecordId);
             if (rIndex > -1) {
                 inMemoryData[rIndex].keywords = [...currentEditTags];
-                const r = inMemoryData[rIndex];
                 try {
-                    await saveRecordingToDB(currentEditRecordId, await encryptData({ date: r.date, transcript: r.transcript, summary: r.summary, keywords: r.keywords, audioMime: r.audioMime, audioData: r.audioData }));
+                    await saveRecordingToDB(currentEditRecordId, await encryptData(inMemoryData[rIndex]));
                     ui.tagModal.classList.add('hidden'); currentEditRecordId = null;
                     renderRecordings(ui.searchInput.value.toLowerCase());
                 } catch(err) { alert("Speicherfehler: " + err.message); }
             }
         };
 
+        // EVENT DELEGATION (Löschen, Tags, Wiederholen)
         ui.recordingsList.addEventListener('click', async (e) => {
+            // Aufnahme löschen
             const deleteBtn = e.target.closest('.delete-btn');
             if (deleteBtn) {
                 if (confirm("Wirklich unwiderruflich löschen?")) {
@@ -630,8 +601,27 @@
                     await refreshDataAndUI();
                 } return;
             }
+            
+            // Tag Modal öffnen
             const editTagBtn = e.target.closest('.add-tag-btn');
-            if (editTagBtn) openTagModal(editTagBtn.getAttribute('data-edit-id'));
+            if (editTagBtn) {
+                openTagModal(editTagBtn.getAttribute('data-edit-id'));
+                return;
+            }
+
+            // KI-Verarbeitung wiederholen (bei Fehler oder manuell gewollt)
+            const retryBtn = e.target.closest('.retry-btn');
+            if (retryBtn) {
+                const id = retryBtn.getAttribute('data-id');
+                const recIndex = inMemoryData.findIndex(r => r.id === id);
+                if(recIndex > -1) {
+                    inMemoryData[recIndex].status = 'pending';
+                    inMemoryData[recIndex].errorMsg = '';
+                    await saveRecordingToDB(id, await encryptData(inMemoryData[recIndex]));
+                    renderRecordings(ui.searchInput.value.toLowerCase());
+                    processPendingRecordings(); // Verarbeitung erneut starten
+                }
+            }
         });
 
         ui.searchInput.addEventListener('input', (e) => renderRecordings(e.target.value.toLowerCase()));
@@ -660,6 +650,7 @@
                         } catch(err) {}
                     }
                     alert("Import abgeschlossen."); await refreshDataAndUI();
+                    processPendingRecordings(); // Verarbeite eventuell unfertige importierte Tasks
                 } catch (err) { alert("Fehler beim Import."); }
             }; reader.readAsText(file); e.target.value = ''; 
         });
@@ -668,75 +659,31 @@
             inMemoryData = []; 
             for (const record of await loadAllFromDB()) {
                 const decrypted = await decryptData(record.iv, record.data);
-                if (decrypted) inMemoryData.push({ id: record.id, ...decrypted });
+                if (decrypted) {
+                    // MIGRATION: Alte Aufnahmen (die noch kein Status-Feld hatten) als 'done' markieren
+                    if (!decrypted.status) decrypted.status = 'done';
+                    inMemoryData.push({ id: record.id, ...decrypted });
+                }
             }
             inMemoryData.sort((a, b) => new Date(b.date) - new Date(a.date));
             renderRecordings(ui.searchInput.value.toLowerCase());
         }
 
-        async function refreshTaskQueueUI() {
-            inMemoryTasks = [];
-            const encryptedTasks = await loadAllTasksFromDB();
-            for (const task of encryptedTasks) {
-                const decrypted = await decryptData(task.iv, task.data);
-                if (decrypted) inMemoryTasks.push({ id: task.id, ...decrypted });
-            }
-            inMemoryTasks.sort((a, b) => new Date(a.date) - new Date(b.date)); // Älteste zuerst
-            renderTaskQueue();
-        }
-
-        function renderTaskQueue() {
-            ui.taskList.innerHTML = '';
-            
-            if (inMemoryTasks.length === 0) {
-                ui.taskQueueSection.classList.add('hidden');
-                return;
-            }
-            
-            ui.taskQueueSection.classList.remove('hidden');
-
-            inMemoryTasks.forEach(task => {
-                const dateStr = new Date(task.date).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-                const li = document.createElement('li');
-                li.className = 'task-item';
-
-                let statusHtml = '';
-                let actionsHtml = '';
-
-                if (task.status === 'pending') {
-                    statusHtml = `<span class="task-status status-pending">
-                        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Wartet...
-                    </span>`;
-                } else if (task.status === 'processing') {
-                    statusHtml = `<span class="task-status status-processing">
-                        <svg class="w-3 h-3" style="animation: spin 1s linear infinite;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg> Analysiere via Gemini...
-                    </span>`;
-                } else if (task.status === 'error') {
-                    statusHtml = `<span class="task-status status-error" title="${task.errorMsg}">
-                        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Fehler
-                    </span>`;
-                    actionsHtml = `
-                        <div class="task-actions">
-                            <button class="task-btn" data-action="retry" data-task-id="${task.id}">Wiederholen</button>
-                            <button class="task-btn task-btn-danger" data-action="delete" data-task-id="${task.id}">Verwerfen</button>
-                        </div>
-                    `;
-                }
-
-                li.innerHTML = `
-                    <div class="task-info">
-                        <span class="task-date">Aufnahme von ${dateStr} Uhr</span>
-                        ${statusHtml}
-                    </div>
-                    ${actionsHtml}
-                `;
-                ui.taskList.appendChild(li);
-            });
-        }
-
         function renderRecordings(filterQuery = "") {
             ui.recordingsList.innerHTML = "";
-            const filteredData = inMemoryData.filter(item => !filterQuery || `${item.transcript} ${item.summary} ${item.keywords.join(' ')}`.toLowerCase().includes(filterQuery));
+            const filteredData = inMemoryData.filter(item => {
+                if (!filterQuery) return true;
+                const kw = item.keywords ? item.keywords.join(' ') : '';
+                return `${item.transcript} ${item.summary} ${kw}`.toLowerCase().includes(filterQuery);
+            });
+
+            // Sichtbarkeit des globalen "Verarbeiten" Buttons steuern
+            const hasUnfinished = inMemoryData.some(r => r.status === 'pending' || r.status === 'error' || r.status === 'processing');
+            if (hasUnfinished) {
+                ui.processQueueBtn.classList.remove('hidden');
+            } else {
+                ui.processQueueBtn.classList.add('hidden');
+            }
 
             if (filteredData.length === 0) {
                 ui.recordingsList.innerHTML = `<div class="empty-state"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg><p class="font-medium">Keine Aufnahmen gefunden.</p></div>`; return;
@@ -746,20 +693,82 @@
                 const dateStr = new Date(item.date).toLocaleString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
                 const audioUrl = URL.createObjectURL(new Blob([base64ToBuffer(item.audioData)], { type: item.audioMime }));
                 
-                const card = document.createElement('div'); card.className = "record-card";
-                card.innerHTML = `
+                const card = document.createElement('div'); 
+                card.className = "record-card";
+                
+                // HTML für den Header (Datum + Buttons)
+                let headerHtml = `
                     <div class="card-header">
-                        <div class="date-badge"><div class="icon-circle"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg></div><span>${dateStr}</span></div>
-                        <div class="tags">
-                            ${item.keywords.map(k => `<span class="tag">#${k}</span>`).join('')}
+                        <div class="date-badge">
+                            <div class="icon-circle">
+                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                            </div>
+                            <span>${dateStr}</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="icon-btn retry-btn" data-id="${item.id}" title="Transkription erneut starten">
+                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                            </button>
+                            <button class="icon-btn danger-hover delete-btn" data-id="${item.id}" title="Aufnahme löschen">
+                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                // Audio Player HTML (immer sichtbar!)
+                let audioHtml = `<div class="audio-wrapper"><audio controls src="${audioUrl}"></audio></div>`;
+                
+                // Dynamischer Inhalt, basierend auf dem Status
+                let contentHtml = '';
+
+                if (item.status === 'pending') {
+                    contentHtml = `
+                        <div class="status-panel">
+                            <span class="text-warning font-bold text-sm flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                In Warteschlange...
+                            </span>
+                        </div>
+                    `;
+                } else if (item.status === 'processing') {
+                    contentHtml = `
+                        <div class="status-panel">
+                            <span class="text-primary font-bold text-sm flex items-center gap-2">
+                                <div class="loader-small"></div>
+                                KI analysiert (Gemini)...
+                            </span>
+                        </div>
+                    `;
+                } else if (item.status === 'error') {
+                    contentHtml = `
+                        <div class="status-panel error">
+                            <span class="text-danger font-bold text-sm flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                Fehler bei der Verarbeitung
+                            </span>
+                            <span class="text-xs text-muted">${item.errorMsg}</span>
+                            <button class="btn btn-outline btn-small retry-btn mt-2" data-id="${item.id}">Erneut versuchen</button>
+                        </div>
+                    `;
+                } else {
+                    // Status ist 'done' (oder alte Aufnahmen ohne Status)
+                    let tagsHtml = item.keywords && item.keywords.length > 0 
+                        ? item.keywords.map(k => `<span class="tag">#${k}</span>`).join('') 
+                        : '';
+                        
+                    contentHtml = `
+                        <div class="tags" style="margin-top: -0.5rem; justify-content: flex-start;">
+                            ${tagsHtml}
                             <button class="add-tag-btn" data-edit-id="${item.id}" title="Tags bearbeiten">+ EDIT</button>
                         </div>
-                        <button class="delete-btn" data-id="${item.id}" title="Aufnahme löschen"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
-                    </div>
-                    <div><h3 class="section-title"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>Zusammenfassung</h3><p class="font-medium text-sm">${item.summary}</p></div>
-                    <div><h3 class="section-title"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /></svg>Original Transkript</h3><p class="transcript-text">"${item.transcript}"</p></div>
-                    <div class="audio-wrapper"><audio controls src="${audioUrl}"></audio></div>
-                `;
+                        <div><h3 class="section-title"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>Zusammenfassung</h3><p class="font-medium text-sm">${item.summary}</p></div>
+                        <div><h3 class="section-title"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /></svg>Original Transkript</h3><p class="transcript-text">"${item.transcript}"</p></div>
+                    `;
+                }
+
+                // Alles zusammenbauen
+                card.innerHTML = headerHtml + contentHtml + audioHtml;
                 ui.recordingsList.appendChild(card);
             });
         }
