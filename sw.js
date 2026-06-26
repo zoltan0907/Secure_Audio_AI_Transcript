@@ -1,10 +1,10 @@
-const CACHE_NAME = 'audio-ai-es-v2';
+const CACHE_NAME = 'audio-ai-es-v3';
+
+// Wir cachen hier nur unsere eigenen, lokalen Dateien!
 const urlsToCache = [
     './',
     './index.html',
-    './manifest.json',
-    'https://cdn.tailwindcss.com'
-    // Die KI-Modelle werden von transformers.js automatisch gecacht.
+    './manifest.json'
 ];
 
 self.addEventListener('install', event => {
@@ -15,6 +15,16 @@ self.addEventListener('install', event => {
 
 self.addEventListener('fetch', event => {
     event.respondWith(
-        caches.match(event.request).then(response => response || fetch(event.request))
+        caches.match(event.request).then(response => {
+            // 1. Wenn die Datei im Cache ist, gib sie zurück
+            if (response) {
+                return response;
+            }
+            
+            // 2. Ansonsten lade sie normal aus dem Netz (z.B. Tailwind oder die KI-Modelle)
+            return fetch(event.request).catch(err => {
+                console.log('Ressource offline nicht verfügbar:', event.request.url);
+            });
+        })
     );
 });
