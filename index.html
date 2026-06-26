@@ -168,6 +168,12 @@
         .tags { display: flex; flex-wrap: wrap; gap: 0.25rem; justify-content: flex-end; }
         .tag { background: var(--tag-bg); color: var(--tag-text); border: 1px solid #dbeafe; font-size: 0.65rem; padding: 0.2rem 0.5rem; border-radius: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
         
+        .add-tag-btn { background: none; border: 1px dashed var(--text-light); color: var(--text-light); border-radius: 1rem; padding: 0.1rem 0.5rem; font-size: 0.6rem; font-weight: 700; cursor: pointer; text-transform: uppercase; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+        .add-tag-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--tag-bg); }
+        .tag-interactive { cursor: pointer; user-select: none; transition: all 0.2s; opacity: 0.6; border-style: dashed; }
+        .tag-interactive:hover { opacity: 0.8; }
+        .tag-interactive.active { opacity: 1; border-style: solid; background: var(--primary); color: white; border-color: var(--primary); }
+
         .delete-btn { background: none; border: none; color: var(--text-light); cursor: pointer; padding: 0.25rem; border-radius: 0.25rem; transition: all 0.2s; display: flex; align-items: center; justify-content: center; margin-left: auto; }
         .delete-btn:hover { background: #fee2e2; color: var(--danger); }
         .delete-btn svg { width: 1.1rem; height: 1.1rem; }
@@ -218,6 +224,26 @@
             </button>
             <div class="text-danger text-xs font-medium" style="margin-top: 1rem;">
                 Achtung: Wenn du dieses Passwort vergisst, sind deine Daten für immer verloren! Es gibt kein Reset.
+            </div>
+        </div>
+    </div>
+
+    <!-- TAG EDITOR MODAL -->
+    <div id="tag-modal" class="overlay hidden">
+        <div class="login-box" style="text-align: left;">
+            <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">Tags bearbeiten</h2>
+            <p class="text-xs text-muted" style="margin-bottom: 1rem;">Klicke auf bestehende Tags, um sie hinzuzufügen/zu entfernen, oder erstelle neue.</p>
+            <input type="text" id="tag-filter-input" placeholder="Tags durchsuchen..." class="input-field" style="margin-bottom: 0.75rem; padding: 0.5rem; font-size: 0.875rem;">
+            <div id="tag-modal-list" class="tags" style="justify-content: flex-start; margin-bottom: 1.5rem; gap: 0.5rem; max-height: 200px; overflow-y: auto;">
+                <!-- Dynamische Tags -->
+            </div>
+            <div class="flex gap-2" style="margin-bottom: 1.5rem;">
+                <input type="text" id="new-tag-input" placeholder="Neuer Tag..." class="input-field" style="margin-bottom: 0;">
+                <button id="add-new-tag-btn" class="btn btn-outline" style="padding: 0 1rem; font-size: 1.25rem;">+</button>
+            </div>
+            <div class="flex justify-between gap-2">
+                <button id="close-tag-modal-btn" class="btn btn-outline" style="flex: 1;">Abbrechen</button>
+                <button id="save-tags-btn" class="btn btn-primary" style="flex: 1;">Speichern</button>
             </div>
         </div>
     </div>
@@ -303,7 +329,14 @@
             recordingsList: document.getElementById('recordings-list'),
             searchInput: document.getElementById('search-input'),
             exportBtn: document.getElementById('export-btn'),
-            importFile: document.getElementById('import-file')
+            importFile: document.getElementById('import-file'),
+            tagModal: document.getElementById('tag-modal'),
+            tagFilterInput: document.getElementById('tag-filter-input'),
+            tagList: document.getElementById('tag-modal-list'),
+            tagInput: document.getElementById('new-tag-input'),
+            tagAddBtn: document.getElementById('add-new-tag-btn'),
+            tagCloseBtn: document.getElementById('close-tag-modal-btn'),
+            tagSaveBtn: document.getElementById('save-tags-btn')
         };
 
         const SALT = "PwaSecureAudioAppSalt_v1";
@@ -421,7 +454,7 @@
         }
 
         function extractKeywords(text) {
-            const words = text.toLowerCase().replace(/[^\w\säöüß]/gi, '').split(/\s+/).filter(w => w.length > 5);
+            const words = text.toLowerCase().replace(/[^\w\säöüß-]/gi, '').split(/\s+/).filter(w => w.length > 4);
             const counts = {};
             words.forEach(w => counts[w] = (counts[w] || 0) + 1);
             return Object.keys(counts).sort((a, b) => counts[b] - counts[a]).slice(0, 5);
@@ -448,7 +481,7 @@
                     summary = summaryResult[0].summary_text;
 
                     ui.processingText.innerText = "4/4 Extrahiere Keywords...";
-                    keywords = extractKeywords(transcript);
+                    keywords = extractKeywords(summary);
                 }
 
                 const payload = {
@@ -523,7 +556,98 @@
             }
         });
 
-        // Event Delegation für dynamisch erstellte Löschen-Buttons
+        // --- TAG EDITOR LOGIK ---
+        let currentEditRecordId = null;
+        let currentEditTags = [];
+
+        function getAllUniqueTags() {
+            const allTags = new Set();
+            inMemoryData.forEach(record => {
+                record.keywords.forEach(k => allTags.add(k));
+            });
+            return Array.from(allTags).sort();
+        }
+
+        function renderTagModalList(filterQuery = "") {
+            const allTags = new Set([...getAllUniqueTags(), ...currentEditTags]);
+            const sortedTags = Array.from(allTags).sort();
+            
+            ui.tagList.innerHTML = '';
+            
+            const filteredTags = sortedTags.filter(tag => tag.toLowerCase().includes(filterQuery.toLowerCase()));
+            
+            if (filteredTags.length === 0) {
+                ui.tagList.innerHTML = '<span class="text-xs text-muted">Keine passenden Tags gefunden.</span>';
+                return;
+            }
+
+            filteredTags.forEach(tag => {
+                const isActive = currentEditTags.includes(tag);
+                const tagEl = document.createElement('span');
+                tagEl.className = `tag tag-interactive ${isActive ? 'active' : ''}`;
+                tagEl.innerText = `#${tag}`;
+                tagEl.onclick = () => {
+                    if (isActive) {
+                        currentEditTags = currentEditTags.filter(t => t !== tag);
+                    } else {
+                        currentEditTags.push(tag);
+                    }
+                    renderTagModalList(ui.tagFilterInput.value); // Neu rendern, um active-State zu aktualisieren
+                };
+                ui.tagList.appendChild(tagEl);
+            });
+        }
+
+        function openTagModal(id) {
+            currentEditRecordId = id;
+            const record = inMemoryData.find(r => r.id === id);
+            currentEditTags = [...record.keywords];
+            ui.tagFilterInput.value = ''; // Filter beim Öffnen zurücksetzen
+            renderTagModalList();
+            ui.tagModal.classList.remove('hidden');
+        }
+
+        ui.tagFilterInput.addEventListener('input', (e) => {
+            renderTagModalList(e.target.value);
+        });
+
+        ui.tagAddBtn.onclick = () => {
+            const newTag = ui.tagInput.value.trim().toLowerCase().replace(/[^\w\säöüß-]/gi, '').replace(/\s+/g, '-');
+            if (newTag && !currentEditTags.includes(newTag)) {
+                currentEditTags.push(newTag);
+                ui.tagInput.value = '';
+                renderTagModalList(ui.tagFilterInput.value);
+            }
+        };
+
+        ui.tagCloseBtn.onclick = () => {
+            ui.tagModal.classList.add('hidden');
+            currentEditRecordId = null;
+        };
+
+        ui.tagSaveBtn.onclick = async () => {
+            if (!currentEditRecordId) return;
+            const recordIndex = inMemoryData.findIndex(r => r.id === currentEditRecordId);
+            if (recordIndex > -1) {
+                inMemoryData[recordIndex].keywords = [...currentEditTags];
+                const r = inMemoryData[recordIndex];
+                const payload = {
+                    date: r.date, transcript: r.transcript, summary: r.summary, 
+                    keywords: r.keywords, audioMime: r.audioMime, audioData: r.audioData
+                };
+                try {
+                    const encrypted = await encryptData(payload);
+                    await saveRecordingToDB(currentEditRecordId, encrypted);
+                    ui.tagModal.classList.add('hidden');
+                    currentEditRecordId = null;
+                    renderRecordings(ui.searchInput.value.toLowerCase());
+                } catch(err) {
+                    alert("Fehler beim Speichern der Tags: " + err.message);
+                }
+            }
+        };
+
+        // Event Delegation für Löschen- und Tag-Buttons
         ui.recordingsList.addEventListener('click', async (e) => {
             const deleteBtn = e.target.closest('.delete-btn');
             if (deleteBtn) {
@@ -536,6 +660,13 @@
                         alert("Fehler beim Löschen: " + err.message);
                     }
                 }
+                return;
+            }
+
+            const editTagBtn = e.target.closest('.add-tag-btn');
+            if (editTagBtn) {
+                const id = editTagBtn.getAttribute('data-edit-id');
+                openTagModal(id);
             }
         });
 
@@ -626,6 +757,7 @@
                         </div>
                         <div class="tags">
                             ${item.keywords.map(k => `<span class="tag">#${k}</span>`).join('')}
+                            <button class="add-tag-btn" data-edit-id="${item.id}" title="Tags bearbeiten">+ EDIT</button>
                         </div>
                         <button class="delete-btn" data-id="${item.id}" title="Aufnahme löschen">
                             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
