@@ -328,6 +328,14 @@
             return bytes.buffer;
         }
 
+        // NEU: SHA-256 Hash Funktion für Audio-Deduplikation
+        async function calculateHash(base64Str) {
+            const buffer = base64ToBuffer(base64Str);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
         async function saveApiKey(keyStr) {
             const enc = new TextEncoder();
             const iv = crypto.getRandomValues(new Uint8Array(12));
@@ -415,12 +423,14 @@
             ui.recordStatus.innerText = "Speichere Audio lokal...";
             try {
                 const audioBase64 = bufferToBase64(await blob.arrayBuffer());
+                const audioHash = await calculateHash(audioBase64); // Hash berechnen
                 
                 // Wir speichern die Aufnahme sofort, markieren sie aber als 'pending' (ausstehend)
                 const payload = {
                     date: new Date().toISOString(),
                     audioMime: blob.type,
                     audioData: audioBase64,
+                    hash: audioHash, // Hash dem Payload hinzufügen
                     transcript: "",
                     summary: "",
                     keywords: [],
@@ -735,10 +745,8 @@
             reader.onload = async (event) => {
                 try {
                     const importedData = JSON.parse(event.target.result);
-                    if (!confirm("Achtung: Dies überschreibt alle aktuellen Daten auf diesem Gerät. Fortfahren?")) return;
                     
                     if (!db) db = await initDB();
-                    await clearDB();
 
                     let recordings = [];
                     let apiKeyObj = null;
@@ -752,22 +760,80 @@
                         throw new Error("Unbekanntes Backup-Format");
                     }
 
-                    for (const item of recordings) {
-                        try {
-                            const record = { id: item.id, iv: new Uint8Array(base64ToBuffer(item.iv)), cipherBuffer: base64ToBuffer(item.data) };
-                            await saveRecordingToDB(record.id, record);
-                        } catch(err) {}
-                    }
+                    if (isFromLogin) {
+                        // RESTORE (ÜBERSCHREIBEN)
+                        if (!confirm("Achtung: Dies überschreibt alle aktuellen Daten auf diesem Gerät. Fortfahren?")) return;
+                        await clearDB();
 
-                    if (apiKeyObj && apiKeyObj.iv && apiKeyObj.cipher) {
-                        localStorage.setItem('apiKeyIv', apiKeyObj.iv);
-                        localStorage.setItem('encryptedApiKey', apiKeyObj.cipher);
-                    }
+                        for (const item of recordings) {
+                            try {
+                                const record = { id: item.id, iv: new Uint8Array(base64ToBuffer(item.iv)), cipherBuffer: base64ToBuffer(item.data) };
+                                await saveRecordingToDB(record.id, record);
+                            } catch(err) {}
+                        }
 
-                    alert("Restore erfolgreich abgeschlossen! " + (isFromLogin ? "Bitte logge dich nun mit deinem Master-Passwort ein." : ""));
-                    
-                    if (!isFromLogin) {
-                        await loadApiKey();
+                        if (apiKeyObj && apiKeyObj.iv && apiKeyObj.cipher) {
+                            localStorage.setItem('apiKeyIv', apiKeyObj.iv);
+                            localStorage.setItem('encryptedApiKey', apiKeyObj.cipher);
+                        }
+
+                        alert("Restore erfolgreich abgeschlossen! Bitte logge dich nun mit deinem Master-Passwort ein.");
+                    } else {
+                        // IN-APP IMPORT (MERGE & DEDUPLIKATION)
+                        if (!confirm(`Sollen die Daten aus dem Backup hinzugefügt (gemerged) werden? Duplikate werden anhand des Audios erkannt und übersprungen.`)) return;
+
+                        // Berechne Hashes für bestehende Daten, falls diese noch keinen haben (Abwärtskompatibilität)
+                        const existingHashes = new Set();
+                        const existingIds = new Set();
+                        
+                        for (const record of inMemoryData) {
+                            existingIds.add(record.id);
+                            if (record.hash) {
+                                existingHashes.add(record.hash);
+                            } else {
+                                const hash = await calculateHash(record.audioData);
+                                record.hash = hash;
+                                existingHashes.add(hash);
+                            }
+                        }
+
+                        let addedCount = 0;
+                        let skippedCount = 0;
+
+                        for (const item of recordings) {
+                            try {
+                                const record = { id: item.id, iv: new Uint8Array(base64ToBuffer(item.iv)), cipherBuffer: base64ToBuffer(item.data) };
+                                // Entschlüsseln, um den Hash zu prüfen
+                                const decryptedItem = await decryptData(record.iv, record.cipherBuffer);
+                                
+                                if (!decryptedItem) throw new Error("Falsches Passwort für diesen Eintrag");
+
+                                let itemHash = decryptedItem.hash;
+                                if (!itemHash) {
+                                    itemHash = await calculateHash(decryptedItem.audioData);
+                                }
+
+                                if (existingHashes.has(itemHash) || existingIds.has(item.id)) {
+                                    skippedCount++;
+                                } else {
+                                    await saveRecordingToDB(record.id, record);
+                                    existingHashes.add(itemHash);
+                                    existingIds.add(record.id);
+                                    addedCount++;
+                                }
+                            } catch(err) {
+                                console.warn("Eintrag übersprungen:", err);
+                            }
+                        }
+
+                        // API-Key nur übernehmen, wenn lokal noch keiner vorhanden ist
+                        if (apiKeyObj && apiKeyObj.iv && apiKeyObj.cipher && !apiKey) {
+                            localStorage.setItem('apiKeyIv', apiKeyObj.iv);
+                            localStorage.setItem('encryptedApiKey', apiKeyObj.cipher);
+                            await loadApiKey();
+                        }
+
+                        alert(`Import abgeschlossen! ${addedCount} neu hinzugefügt, ${skippedCount} Duplikate übersprungen.`);
                         await refreshDataAndUI();
                         processPendingRecordings();
                     }
