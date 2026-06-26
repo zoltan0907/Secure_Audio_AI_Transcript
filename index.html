@@ -430,8 +430,8 @@
 
         async function initAIModels() {
             try {
-                ui.aiStatus.innerText = "Lade Transkriptions-Modell (Whisper)...";
-                transcriber = await pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny', { quantized: true });
+                ui.aiStatus.innerText = "Lade deutsches Transkriptions-Modell (Whisper-Small, ca. 240MB)...";
+                transcriber = await pipeline('automatic-speech-recognition', 'Xenova/whisper-small', { quantized: true });
                 
                 ui.aiStatus.innerText = "Lade Zusammenfassungs-Modell (BART)...";
                 summarizer = await pipeline('summarization', 'Xenova/distilbart-cnn-6-6', { quantized: true });
