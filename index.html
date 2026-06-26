@@ -93,32 +93,12 @@
         </section>
     </div>
 
-    <!-- PWA SERVICE WORKER INJECTION -->
+    <!-- PWA SERVICE WORKER -->
     <script>
-        // Inline Service Worker für Offline-Fähigkeit
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                const swCode = `
-                    const CACHE_NAME = 'audio-ai-es-v1';
-                    const urlsToCache = [
-                        './',
-                        './index.html',
-                        './manifest.json',
-                        'https://cdn.tailwindcss.com'
-                        // Die KI-Modelle werden von transformers.js automatisch über die Cache-API des Browsers gecacht.
-                    ];
-
-                    self.addEventListener('install', event => {
-                        event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
-                    });
-
-                    self.addEventListener('fetch', event => {
-                        event.respondWith(caches.match(event.request).then(response => response || fetch(event.request)));
-                    });
-                `;
-                const blob = new Blob([swCode], { type: 'application/javascript' });
-                navigator.serviceWorker.register(URL.createObjectURL(blob))
-                    .then(() => console.log('ServiceWorker registriert'))
+                navigator.serviceWorker.register('./sw.js')
+                    .then(() => console.log('ServiceWorker erfolgreich registriert'))
                     .catch(err => console.log('SW Fehler:', err));
             });
         }
@@ -412,7 +392,8 @@
                     ui.recordBtn.classList.add('bg-slate-800', 'hover:bg-slate-900', 'animate-pulse', 'scale-110');
                     ui.recordStatus.innerText = "Aufnahme läuft... (Tippen zum Stoppen)";
                 } catch (err) {
-                    alert("Mikrofon-Zugriff wurde verweigert oder ist nicht verfügbar.");
+                    console.error("Mikrofon Fehler-Details:", err);
+                    alert("Mikrofon-Fehler: " + (err.name || err.message || err) + "\n\nStelle sicher, dass ein Mikrofon angeschlossen/aktiviert ist.");
                 }
             } else {
                 mediaRecorder.stop();
