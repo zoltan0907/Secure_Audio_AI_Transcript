@@ -152,6 +152,22 @@
         </div>
     </div>
 
+    <!-- API KEY MODAL -->
+    <div id="api-key-modal" class="overlay hidden">
+        <div class="login-box" style="text-align: left;">
+            <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">Einstellungen</h2>
+            <p class="text-xs text-muted" style="margin-bottom: 1rem;">Um die KI nutzen zu können, wird ein kostenloser Google Gemini API-Key benötigt. Er wird lokal verschlüsselt in deinem Browser gespeichert.</p>
+            <input type="password" id="api-key-input" placeholder="API-Key (AIzaSy...)" class="input-field">
+            <div class="flex justify-between gap-2">
+                <button id="close-api-key-btn" class="btn btn-outline" style="flex: 1;">Schließen</button>
+                <button id="save-api-key-btn" class="btn btn-primary" style="flex: 1;">Speichern</button>
+            </div>
+            <p class="text-xs text-muted" style="margin-top: 1rem;">
+                <a href="https://aistudio.google.com/" target="_blank" class="text-primary" style="text-decoration: underline;">Hier kannst du kostenlos einen Key erstellen.</a>
+            </p>
+        </div>
+    </div>
+
     <!-- TAG EDITOR MODAL -->
     <div id="tag-modal" class="overlay hidden">
         <div class="login-box" style="text-align: left;">
@@ -181,6 +197,9 @@
                 <p id="ai-status" class="text-success text-sm font-medium">Verbunden mit Gemini AI (Cloud-Verarbeitung)</p>
             </div>
             <div class="header-actions" style="margin-top: 1rem;">
+                <button id="settings-btn" class="btn btn-outline" title="Einstellungen" style="flex: 0 0 auto; padding: 0.75rem;">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                </button>
                 <button id="export-btn" class="btn btn-outline">Backup</button>
                 <label class="btn btn-outline">
                     Import <input type="file" id="import-file" class="hidden" accept=".json">
@@ -223,7 +242,7 @@
 
     <!-- MAIN LOGIC -->
     <script type="module">
-        const apiKey = ""; // API Key wird von der Umgebung bereitgestellt
+        let apiKey = ""; // Wird aus dem lokalen Speicher geladen
         
         let cryptoKey = null;
         let db = null;
@@ -245,6 +264,11 @@
             searchInput: document.getElementById('search-input'),
             exportBtn: document.getElementById('export-btn'),
             importFile: document.getElementById('import-file'),
+            settingsBtn: document.getElementById('settings-btn'),
+            apiKeyModal: document.getElementById('api-key-modal'),
+            apiKeyInput: document.getElementById('api-key-input'),
+            saveApiKeyBtn: document.getElementById('save-api-key-btn'),
+            closeApiKeyBtn: document.getElementById('close-api-key-btn'),
             tagModal: document.getElementById('tag-modal'),
             tagFilterInput: document.getElementById('tag-filter-input'),
             tagList: document.getElementById('tag-modal-list'),
@@ -289,6 +313,32 @@
             const bytes = new Uint8Array(binary_string.length);
             for (let i = 0; i < binary_string.length; i++) bytes[i] = binary_string.charCodeAt(i);
             return bytes.buffer;
+        }
+
+        async function saveApiKey(keyStr) {
+            const enc = new TextEncoder();
+            const iv = crypto.getRandomValues(new Uint8Array(12));
+            const cipherBuffer = await crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, cryptoKey, enc.encode(keyStr));
+            localStorage.setItem('apiKeyIv', bufferToBase64(iv));
+            localStorage.setItem('encryptedApiKey', bufferToBase64(cipherBuffer));
+            apiKey = keyStr;
+        }
+
+        async function loadApiKey() {
+            const b64Iv = localStorage.getItem('apiKeyIv');
+            const b64Cipher = localStorage.getItem('encryptedApiKey');
+            if (!b64Iv || !b64Cipher) return false;
+
+            try {
+                const iv = base64ToBuffer(b64Iv);
+                const cipherBuffer = base64ToBuffer(b64Cipher);
+                const decryptedBuffer = await crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, cryptoKey, cipherBuffer);
+                apiKey = new TextDecoder().decode(decryptedBuffer);
+                return apiKey.length > 0;
+            } catch (e) {
+                console.warn("API Key konnte nicht entschlüsselt werden (z.B. neues Passwort).");
+                return false;
+            }
         }
 
         function initDB() {
@@ -403,6 +453,8 @@
 
                     // An Gemini senden
                     try {
+                        if (!apiKey) throw new Error("Kein Gemini API-Key hinterlegt. Bitte in den Einstellungen (Zahnrad) eintragen.");
+                        
                         const rec = inMemoryData[rIndex];
                         const mimeType = rec.audioMime.split(';')[0] || 'audio/webm';
                         const payload = {
@@ -472,10 +524,38 @@
                 
                 await refreshDataAndUI();
                 
-                // Hintergrundverarbeitung anstoßen, falls beim Schließen der App noch alte Tasks warteten oder auf Fehler liefen
-                processPendingRecordings();
+                // API Key prüfen
+                const hasApiKey = await loadApiKey();
+                if (!hasApiKey) {
+                    ui.apiKeyModal.classList.remove('hidden');
+                } else {
+                    // Hintergrundverarbeitung anstoßen, falls beim Schließen der App noch alte Tasks warteten oder auf Fehler liefen
+                    processPendingRecordings();
+                }
             } catch (error) { alert("Startfehler: " + error.message); } 
             finally { ui.loginBtn.innerText = "Entschlüsseln & Öffnen"; ui.loginBtn.disabled = false; }
+        });
+
+        // --- API KEY SETTINGS EVENTS ---
+        ui.settingsBtn.addEventListener('click', () => {
+            ui.apiKeyInput.value = apiKey;
+            ui.apiKeyModal.classList.remove('hidden');
+        });
+
+        ui.closeApiKeyBtn.addEventListener('click', () => {
+            ui.apiKeyModal.classList.add('hidden');
+            processPendingRecordings(); // Verarbeitung trotzdem versuchen
+        });
+
+        ui.saveApiKeyBtn.addEventListener('click', async () => {
+            const key = ui.apiKeyInput.value.trim();
+            if (key) {
+                await saveApiKey(key);
+                ui.apiKeyModal.classList.add('hidden');
+                processPendingRecordings();
+            } else {
+                alert("Bitte einen API Key eingeben oder abbrechen.");
+            }
         });
 
         ui.recordBtn.addEventListener('click', async () => {
