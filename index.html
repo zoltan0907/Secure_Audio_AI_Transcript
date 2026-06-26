@@ -18,7 +18,6 @@
             --primary: #2563eb;
             --primary-hover: #1d4ed8;
             --danger: #ef4444;
-            --danger-hover: #dc2626;
             --warning: #d97706;
             --success: #16a34a;
             --border-color: #f1f5f9;
@@ -34,14 +33,7 @@
 
         /* --- RESET & BASIS --- */
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            line-height: 1.5;
-            -webkit-tap-highlight-color: transparent;
-            overscroll-behavior: none;
-        }
+        body { font-family: system-ui, -apple-system, sans-serif; background-color: var(--bg-body); color: var(--text-main); line-height: 1.5; -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
         .hidden { display: none !important; }
 
         /* --- TYPOGRAFIE --- */
@@ -56,109 +48,43 @@
         .font-bold { font-weight: 700; }
 
         /* --- LAYOUT --- */
-        .container {
-            max-w-width: 56rem;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 1rem 1rem 6rem 1rem;
-        }
+        .container { max-width: 900px; margin: 0 auto; padding: 1rem 1rem 6rem 1rem; }
         .flex { display: flex; }
-        .flex-col { flex-direction: column; }
         .items-center { align-items: center; }
         .justify-between { justify-content: space-between; }
-        .justify-center { justify-content: center; }
         .gap-2 { gap: 0.5rem; }
-        .gap-4 { gap: 1rem; }
 
         /* --- KOMPONENTEN --- */
-        .card {
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            padding: 1.5rem;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-color);
-            margin-bottom: 1.5rem;
-        }
+        .card { background: var(--bg-card); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); margin-bottom: 1.5rem; }
 
-        /* Buttons */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.75rem 1rem;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s;
-            font-size: 0.875rem;
-        }
+        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; font-size: 0.875rem; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
         .btn-outline { background: white; color: var(--text-main); border: 1px solid #e2e8f0; }
         .btn-outline:hover { background: #f8fafc; }
 
-        /* Login Screen */
-        .overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(15, 23, 42, 0.9);
-            display: flex; align-items: center; justify-content: center;
-            padding: 1rem; z-index: 50;
-        }
-        .login-box {
-            background: white; padding: 2rem; border-radius: var(--radius-xl);
-            width: 100%; max-width: 28rem; text-align: center; box-shadow: var(--shadow-lg);
-        }
-        .input-field {
-            width: 100%; padding: 0.75rem; border-radius: var(--radius-md);
-            border: 1px solid #cbd5e1; margin-bottom: 1rem; font-size: 1rem; outline: none;
-        }
+        .overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.9); display: flex; align-items: center; justify-content: center; padding: 1rem; z-index: 50; }
+        .login-box { background: white; padding: 2rem; border-radius: var(--radius-xl); width: 100%; max-width: 28rem; text-align: center; box-shadow: var(--shadow-lg); }
+        .input-field { width: 100%; padding: 0.75rem; border-radius: var(--radius-md); border: 1px solid #cbd5e1; margin-bottom: 1rem; font-size: 1rem; outline: none; }
         .input-field:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(37,99,235,0.2); }
 
-        /* Header & Header Actions */
         header { margin-bottom: 2rem; padding-top: 0.5rem; }
         .header-actions { display: flex; gap: 0.5rem; width: 100%; }
         .header-actions .btn { flex: 1; text-align: center; }
 
-        /* Record Area */
         .record-area { text-align: center; position: relative; overflow: hidden; border-radius: var(--radius-xl); }
-        .record-btn {
-            width: 5rem; height: 5rem; border-radius: 50%; border: none;
-            background: var(--danger); color: white; display: flex; align-items: center; justify-content: center;
-            margin: 0 auto; cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow-lg);
-            position: relative; z-index: 10;
-        }
+        .record-btn { width: 5rem; height: 5rem; border-radius: 50%; border: none; background: var(--danger); color: white; display: flex; align-items: center; justify-content: center; margin: 0 auto; cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow-lg); position: relative; z-index: 10; }
         .record-btn svg { width: 2rem; height: 2rem; fill: currentColor; }
         .record-btn:active:not(:disabled) { transform: scale(0.95); }
         .record-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        
-        /* State-Klasse für die laufende Aufnahme */
-        .record-btn.is-recording {
-            background: #1e293b; 
-            transform: scale(1.1);
-            animation: pulse 1.5s infinite;
-        }
+        .record-btn.is-recording { background: #1e293b; transform: scale(1.1); animation: pulse 1.5s infinite; }
 
-        /* Suchleiste */
         .search-container { position: sticky; top: 0.5rem; z-index: 10; margin-bottom: 1.5rem; }
-        .search-input {
-            width: 100%; padding: 1rem 1rem 1rem 2.5rem; border-radius: var(--radius-lg);
-            border: none; box-shadow: var(--shadow-md); background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(8px); outline: none; font-size: 1rem;
-        }
-        .search-icon {
-            position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
-            width: 1.25rem; height: 1.25rem; color: var(--text-light); pointer-events: none;
-        }
+        .search-input { width: 100%; padding: 1rem 1rem 1rem 2.5rem; border-radius: var(--radius-lg); border: none; box-shadow: var(--shadow-md); background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); outline: none; font-size: 1rem; }
+        .search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 1.25rem; height: 1.25rem; color: var(--text-light); pointer-events: none; }
 
-        /* Aufnahmen-Liste */
-        .record-card {
-            background: white; border-radius: var(--radius-xl); padding: 1.25rem;
-            box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);
-            display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem;
-            transition: box-shadow 0.2s;
-        }
+        .record-card { background: white; border-radius: var(--radius-xl); padding: 1.25rem; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem; transition: box-shadow 0.2s; }
         .record-card:hover { box-shadow: var(--shadow-md); }
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; }
         .date-badge { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); }
@@ -180,29 +106,20 @@
 
         .section-title { font-size: 0.7rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.25rem; }
         .section-title svg { width: 0.875rem; height: 0.875rem; }
-        
         .transcript-text { font-size: 0.875rem; color: var(--text-muted); font-style: italic; border-left: 3px solid var(--border-color); padding-left: 0.75rem; }
-        
         .audio-wrapper { margin-top: 0.5rem; padding-top: 1rem; border-top: 1px solid var(--border-color); background: var(--bg-body); border-radius: var(--radius-md); overflow: hidden; }
         audio { width: 100%; height: 2.5rem; outline: none; opacity: 0.9; }
 
-        /* Lade-Indikator */
         .processing-indicator { display: flex; flex-direction: column; align-items: center; margin-top: 1.5rem; }
-        .loader {
-            border: 3px solid #f3f3f3; border-top: 3px solid var(--primary);
-            border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; margin-bottom: 0.5rem;
-        }
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--primary); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; margin-bottom: 0.5rem; }
         .processing-text { font-size: 0.875rem; color: var(--primary); font-weight: 500; background: #eff6ff; padding: 0.25rem 1rem; border-radius: 1rem; }
-        
         .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-muted); background: white; border-radius: var(--radius-xl); border: 2px dashed var(--border-color); }
         .empty-state svg { width: 3rem; height: 3rem; color: #cbd5e1; margin: 0 auto 1rem auto; }
 
-        /* Animationen */
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
         .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 
-        /* Desktop Anpassungen */
         @media (min-width: 640px) {
             header { flex-direction: row; }
             .header-actions { width: auto; }
@@ -213,17 +130,15 @@
 </head>
 <body>
 
-    <!-- LOGIN / PASSWORT SCREEN -->
+    <!-- LOGIN SCREEN -->
     <div id="login-screen" class="overlay">
         <div class="login-box">
             <h1>Secure Audio AI</h1>
-            <p class="text-muted text-sm" style="margin-bottom: 1.5rem;">Alle Daten werden lokal in deinem Browser verschlüsselt. Wähle ein starkes Master-Passwort.</p>
+            <p class="text-muted text-sm" style="margin-bottom: 1.5rem;">Alle Daten werden lokal verschlüsselt. Wähle ein starkes Master-Passwort.</p>
             <input type="password" id="password-input" placeholder="Dein Master-Passwort" class="input-field">
-            <button id="login-btn" class="btn btn-primary" style="width: 100%;">
-                Entschlüsseln & Öffnen
-            </button>
+            <button id="login-btn" class="btn btn-primary" style="width: 100%;">Entschlüsseln & Öffnen</button>
             <div class="text-danger text-xs font-medium" style="margin-top: 1rem;">
-                Achtung: Wenn du dieses Passwort vergisst, sind deine Daten für immer verloren! Es gibt kein Reset.
+                Achtung: Wenn du dieses Passwort vergisst, sind deine Daten für immer verloren!
             </div>
         </div>
     </div>
@@ -251,22 +166,19 @@
     <!-- MAIN APP -->
     <div id="main-app" class="container hidden">
         
-        <!-- Header & Status -->
-        <header class="flex flex-col items-center">
-            <div style="text-align: center; width: 100%;" class="sm-text-left">
+        <header class="flex flex-col items-center sm:items-start sm:flex-row sm:justify-between">
+            <div style="text-align: center;" class="sm:text-left">
                 <h1>Meine Notizen</h1>
-                <p id="ai-status" class="text-warning text-sm font-medium animate-pulse">KI-Modelle werden initialisiert... (Dies dauert beim 1. Mal etwas länger)</p>
+                <p id="ai-status" class="text-warning text-sm font-medium animate-pulse">KI-Modelle laden... (Dauert beim 1. Mal länger)</p>
             </div>
             <div class="header-actions" style="margin-top: 1rem;">
-                <button id="export-btn" class="btn btn-outline">Backup Export</button>
+                <button id="export-btn" class="btn btn-outline">Backup</button>
                 <label class="btn btn-outline">
-                    Import
-                    <input type="file" id="import-file" class="hidden" accept=".json">
+                    Import <input type="file" id="import-file" class="hidden" accept=".json">
                 </label>
             </div>
         </header>
 
-        <!-- Recorder Area -->
         <section class="card record-area">
             <button id="record-btn" disabled class="record-btn">
                 <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/><path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
@@ -279,26 +191,18 @@
             </div>
         </section>
 
-        <!-- Search Bar -->
         <section class="search-container">
             <svg class="search-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg>
             <input type="text" id="search-input" placeholder="In Transkripten und Keywords suchen..." class="search-input">
         </section>
 
-        <!-- List of Recordings -->
-        <section id="recordings-list">
-            <!-- Dynamischer Content -->
-        </section>
+        <section id="recordings-list"></section>
     </div>
 
     <!-- PWA SERVICE WORKER -->
     <script>
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(() => console.log('ServiceWorker erfolgreich registriert'))
-                    .catch(err => console.log('SW Fehler:', err));
-            });
+            window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW Fehler:', err)));
         }
     </script>
 
@@ -311,6 +215,7 @@
         let db = null;
         let transcriber = null;
         let summarizer = null;
+        let translator = null; // NEU: Übersetzungs-Modell EN->DE
         let mediaRecorder = null;
         let audioChunks = [];
         let isRecording = false;
@@ -359,12 +264,8 @@
 
         async function decryptData(iv, cipherBuffer) {
             try {
-                const decryptedBuffer = await crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, cryptoKey, cipherBuffer);
-                return JSON.parse(new TextDecoder().decode(decryptedBuffer));
-            } catch (e) {
-                console.warn("Entschlüsselung fehlgeschlagen", e);
-                return null;
-            }
+                return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, cryptoKey, cipherBuffer)));
+            } catch (e) { return null; }
         }
 
         function bufferToBase64(buffer) {
@@ -373,7 +274,6 @@
             for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
             return window.btoa(binary);
         }
-        
         function base64ToBuffer(base64) {
             const binary_string = window.atob(base64);
             const bytes = new Uint8Array(binary_string.length);
@@ -384,13 +284,11 @@
         function initDB() {
             return new Promise((resolve, reject) => {
                 const request = indexedDB.open("SecureAudioDB_ES", 1);
-                request.onupgradeneeded = (event) => {
-                    if (!event.target.result.objectStoreNames.contains("recordings")) {
-                        event.target.result.createObjectStore("recordings", { keyPath: "id" });
-                    }
+                request.onupgradeneeded = (e) => {
+                    if (!e.target.result.objectStoreNames.contains("recordings")) e.target.result.createObjectStore("recordings", { keyPath: "id" });
                 };
-                request.onsuccess = (event) => resolve(event.target.result);
-                request.onerror = (event) => reject(event.target.error);
+                request.onsuccess = (e) => resolve(e.target.result);
+                request.onerror = (e) => reject(e.target.error);
             });
         }
 
@@ -398,52 +296,44 @@
             return new Promise((resolve, reject) => {
                 const tx = db.transaction("recordings", "readwrite");
                 tx.objectStore("recordings").put({ id: id, iv: encryptedObj.iv, data: encryptedObj.cipherBuffer });
-                tx.oncomplete = () => resolve();
-                tx.onerror = () => reject(tx.error);
+                tx.oncomplete = () => resolve(); tx.onerror = () => reject(tx.error);
             });
         }
 
         async function loadAllFromDB() {
             return new Promise((resolve, reject) => {
-                const request = db.transaction("recordings", "readonly").objectStore("recordings").getAll();
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => reject(request.error);
-            });
-        }
-
-        async function clearDB() {
-            return new Promise((resolve) => {
-                const tx = db.transaction("recordings", "readwrite");
-                tx.objectStore("recordings").clear();
-                tx.oncomplete = () => resolve();
+                const req = db.transaction("recordings", "readonly").objectStore("recordings").getAll();
+                req.onsuccess = () => resolve(req.result); req.onerror = () => reject(req.error);
             });
         }
 
         async function deleteRecordingFromDB(id) {
             return new Promise((resolve, reject) => {
                 const tx = db.transaction("recordings", "readwrite");
-                const request = tx.objectStore("recordings").delete(id);
-                tx.oncomplete = () => resolve();
-                tx.onerror = () => reject(tx.error);
+                tx.objectStore("recordings").delete(id);
+                tx.oncomplete = () => resolve(); tx.onerror = () => reject(tx.error);
             });
         }
 
         async function initAIModels() {
             try {
-                ui.aiStatus.innerText = "Lade deutsches Transkriptions-Modell (Whisper-Small, ca. 240MB)...";
-                transcriber = await pipeline('automatic-speech-recognition', 'Xenova/whisper-small', { quantized: true });
+                ui.aiStatus.innerText = "Lade Audio-Modell (Whisper)...";
+                transcriber = await pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny', { quantized: true });
                 
-                ui.aiStatus.innerText = "Lade Zusammenfassungs-Modell (BART)...";
+                ui.aiStatus.innerText = "Lade Analyse-Modell (BART)...";
                 summarizer = await pipeline('summarization', 'Xenova/distilbart-cnn-6-6', { quantized: true });
+
+                ui.aiStatus.innerText = "Lade Übersetzer (EN->DE)...";
+                translator = await pipeline('translation', 'Xenova/opus-mt-en-de', { quantized: true });
                 
-                ui.aiStatus.innerText = "KI-Modelle bereit! Alles läuft lokal.";
+                ui.aiStatus.innerText = "Alle KI-Modelle bereit! Läuft 100% lokal.";
                 ui.aiStatus.className = "text-success text-sm font-medium"; 
                 
                 ui.recordBtn.disabled = false;
                 ui.recordStatus.innerText = "Bereit für Aufnahme";
             } catch (error) {
-                console.error("Fehler beim Laden der Modelle:", error);
-                ui.aiStatus.innerText = "Fehler beim Laden der KI. Bitte prüfe deine Verbindung.";
+                console.error(error);
+                ui.aiStatus.innerText = "Fehler beim Laden der KI. Bitte lade die Seite neu.";
                 ui.aiStatus.className = "text-danger text-sm font-medium";
             }
         }
@@ -460,38 +350,53 @@
             return Object.keys(counts).sort((a, b) => counts[b] - counts[a]).slice(0, 5);
         }
 
+        // --- INTELLIGENTE AUDIO PIPELINE ---
         async function processAudioBlob(blob) {
             ui.processingIndicator.classList.remove('hidden');
-            ui.recordStatus.innerText = "Verarbeitung läuft...";
+            ui.recordStatus.innerText = "Aufnahme beendet. Pivot-Translation läuft...";
 
             try {
-                ui.processingText.innerText = "1/4 Audio wird vorbereitet...";
+                ui.processingText.innerText = "1/5 Audio aufbereiten...";
                 const audioData = await readAudioForWhisper(blob);
 
-                ui.processingText.innerText = "2/4 KI transkribiert (kann dauern)...";
-                const transcriptResult = await transcriber(audioData, { language: 'german', task: 'transcribe' });
-                const transcript = transcriptResult.text.trim();
+                // Schritt 2: Deutsches Original-Transkript
+                ui.processingText.innerText = "2/5 Original transkribieren...";
+                const transcriptResultDE = await transcriber(audioData, { language: 'german', task: 'transcribe' });
+                const transcriptDE = transcriptResultDE.text.trim();
 
-                let summary = "Aufnahme war zu kurz für eine sinnvolle Zusammenfassung.";
-                let keywords = [];
+                let finalSummaryDE = "Aufnahme war zu kurz für eine Zusammenfassung.";
+                let finalKeywordsDE = [];
 
-                if (transcript.length > 30) {
-                    ui.processingText.innerText = "3/4 KI fasst zusammen...";
-                    const summaryResult = await summarizer(transcript, { max_new_tokens: 50 });
-                    summary = summaryResult[0].summary_text;
+                if (transcriptDE.length > 30) {
+                    // Schritt 3: Direkt ins Englische übersetzen lassen (nativ über Whisper!)
+                    ui.processingText.innerText = "3/5 Übersetze zu Analyse-Sprache...";
+                    const transcriptResultEN = await transcriber(audioData, { language: 'german', task: 'translate' });
+                    const transcriptEN = transcriptResultEN.text.trim();
 
-                    ui.processingText.innerText = "4/4 Extrahiere Keywords...";
-                    keywords = extractKeywords(summary);
+                    // Schritt 4: Zusammenfassung auf Basis des präziseren englischen Textes
+                    ui.processingText.innerText = "4/5 KI fasst Kontext zusammen...";
+                    const summaryResultEN = await summarizer(transcriptEN, { max_new_tokens: 50 });
+                    const summaryEN = summaryResultEN[0].summary_text;
+
+                    // Schritt 5: Zusammenfassung zurück ins Deutsche übersetzen
+                    ui.processingText.innerText = "5/5 Resultate übersetzen & Tags filtern...";
+                    const translationResult = await translator(summaryEN);
+                    finalSummaryDE = translationResult[0].translation_text;
+
+                    // Tags aus der finalen DEUTSCHEN Zusammenfassung ziehen
+                    finalKeywordsDE = extractKeywords(finalSummaryDE);
                 }
 
+                ui.processingText.innerText = "Verschlüssele Daten...";
                 const payload = {
                     date: new Date().toISOString(),
-                    transcript, summary, keywords,
+                    transcript: transcriptDE, 
+                    summary: finalSummaryDE, 
+                    keywords: finalKeywordsDE,
                     audioMime: blob.type,
                     audioData: bufferToBase64(await blob.arrayBuffer())
                 };
 
-                ui.processingText.innerText = "Verschlüssele Daten...";
                 await saveRecordingToDB(Date.now().toString(), await encryptData(payload));
                 await refreshDataAndUI();
 
@@ -503,26 +408,18 @@
             }
         }
 
+        // --- EVENTS & UI ---
         ui.loginBtn.addEventListener('click', async () => {
-            if (ui.passwordInput.value.length < 4) { alert("Bitte wähle ein Passwort mit mindestens 4 Zeichen."); return; }
+            if (ui.passwordInput.value.length < 4) { alert("Passwort zu kurz (min. 4 Zeichen)."); return; }
             try {
-                ui.loginBtn.innerText = "Schlüssel wird berechnet...";
-                ui.loginBtn.disabled = true;
-                
+                ui.loginBtn.innerText = "Entschlüssele..."; ui.loginBtn.disabled = true;
                 cryptoKey = await deriveKey(ui.passwordInput.value);
                 db = await initDB();
-                
-                ui.loginScreen.classList.add('hidden');
-                ui.mainApp.classList.remove('hidden');
-                
+                ui.loginScreen.classList.add('hidden'); ui.mainApp.classList.remove('hidden');
                 await refreshDataAndUI();
                 initAIModels();
-            } catch (error) {
-                alert("Kritischer Fehler beim Starten: " + error.message);
-            } finally {
-                ui.loginBtn.innerText = "Entschlüsseln & Öffnen";
-                ui.loginBtn.disabled = false;
-            }
+            } catch (error) { alert("Startfehler: " + error.message); } 
+            finally { ui.loginBtn.innerText = "Entschlüsseln & Öffnen"; ui.loginBtn.disabled = false; }
         });
 
         ui.recordBtn.addEventListener('click', async () => {
@@ -531,27 +428,20 @@
                     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                     mediaRecorder = new MediaRecorder(stream);
                     audioChunks = [];
-
                     mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
                     
                     mediaRecorder.onstop = async () => {
                         stream.getTracks().forEach(track => track.stop());
                         await processAudioBlob(new Blob(audioChunks, { type: 'audio/webm' }));
                     };
-
                     mediaRecorder.start();
                     isRecording = true;
-                    
-                    // Neues CSS handling: Einfach die State-Klasse setzen!
                     ui.recordBtn.classList.add('is-recording');
                     ui.recordStatus.innerText = "Aufnahme läuft... (Tippen zum Stoppen)";
-                } catch (err) {
-                    alert("Mikrofon-Fehler: " + (err.name || err.message) + "\n\nStelle sicher, dass ein Mikrofon angeschlossen/aktiviert ist.");
-                }
+                } catch (err) { alert("Mikrofon-Fehler: " + err.message); }
             } else {
                 mediaRecorder.stop();
                 isRecording = false;
-                // State-Klasse entfernen
                 ui.recordBtn.classList.remove('is-recording');
             }
         });
@@ -562,23 +452,17 @@
 
         function getAllUniqueTags() {
             const allTags = new Set();
-            inMemoryData.forEach(record => {
-                record.keywords.forEach(k => allTags.add(k));
-            });
+            inMemoryData.forEach(record => record.keywords.forEach(k => allTags.add(k)));
             return Array.from(allTags).sort();
         }
 
         function renderTagModalList(filterQuery = "") {
             const allTags = new Set([...getAllUniqueTags(), ...currentEditTags]);
-            const sortedTags = Array.from(allTags).sort();
+            const filteredTags = Array.from(allTags).sort().filter(tag => tag.toLowerCase().includes(filterQuery.toLowerCase()));
             
             ui.tagList.innerHTML = '';
-            
-            const filteredTags = sortedTags.filter(tag => tag.toLowerCase().includes(filterQuery.toLowerCase()));
-            
             if (filteredTags.length === 0) {
-                ui.tagList.innerHTML = '<span class="text-xs text-muted">Keine passenden Tags gefunden.</span>';
-                return;
+                ui.tagList.innerHTML = '<span class="text-xs text-muted">Keine passenden Tags.</span>'; return;
             }
 
             filteredTags.forEach(tag => {
@@ -587,128 +471,86 @@
                 tagEl.className = `tag tag-interactive ${isActive ? 'active' : ''}`;
                 tagEl.innerText = `#${tag}`;
                 tagEl.onclick = () => {
-                    if (isActive) {
-                        currentEditTags = currentEditTags.filter(t => t !== tag);
-                    } else {
-                        currentEditTags.push(tag);
-                    }
-                    renderTagModalList(ui.tagFilterInput.value); // Neu rendern, um active-State zu aktualisieren
+                    currentEditTags = isActive ? currentEditTags.filter(t => t !== tag) : [...currentEditTags, tag];
+                    renderTagModalList(ui.tagFilterInput.value);
                 };
                 ui.tagList.appendChild(tagEl);
             });
         }
 
+        ui.tagFilterInput.addEventListener('input', (e) => renderTagModalList(e.target.value));
+
         function openTagModal(id) {
             currentEditRecordId = id;
-            const record = inMemoryData.find(r => r.id === id);
-            currentEditTags = [...record.keywords];
-            ui.tagFilterInput.value = ''; // Filter beim Öffnen zurücksetzen
+            currentEditTags = [...inMemoryData.find(r => r.id === id).keywords];
+            ui.tagFilterInput.value = '';
             renderTagModalList();
             ui.tagModal.classList.remove('hidden');
         }
 
-        ui.tagFilterInput.addEventListener('input', (e) => {
-            renderTagModalList(e.target.value);
-        });
-
         ui.tagAddBtn.onclick = () => {
             const newTag = ui.tagInput.value.trim().toLowerCase().replace(/[^\w\säöüß-]/gi, '').replace(/\s+/g, '-');
             if (newTag && !currentEditTags.includes(newTag)) {
-                currentEditTags.push(newTag);
-                ui.tagInput.value = '';
-                renderTagModalList(ui.tagFilterInput.value);
+                currentEditTags.push(newTag); ui.tagInput.value = ''; renderTagModalList(ui.tagFilterInput.value);
             }
         };
 
-        ui.tagCloseBtn.onclick = () => {
-            ui.tagModal.classList.add('hidden');
-            currentEditRecordId = null;
-        };
+        ui.tagCloseBtn.onclick = () => { ui.tagModal.classList.add('hidden'); currentEditRecordId = null; };
 
         ui.tagSaveBtn.onclick = async () => {
             if (!currentEditRecordId) return;
-            const recordIndex = inMemoryData.findIndex(r => r.id === currentEditRecordId);
-            if (recordIndex > -1) {
-                inMemoryData[recordIndex].keywords = [...currentEditTags];
-                const r = inMemoryData[recordIndex];
-                const payload = {
-                    date: r.date, transcript: r.transcript, summary: r.summary, 
-                    keywords: r.keywords, audioMime: r.audioMime, audioData: r.audioData
-                };
+            const rIndex = inMemoryData.findIndex(r => r.id === currentEditRecordId);
+            if (rIndex > -1) {
+                inMemoryData[rIndex].keywords = [...currentEditTags];
+                const r = inMemoryData[rIndex];
                 try {
-                    const encrypted = await encryptData(payload);
-                    await saveRecordingToDB(currentEditRecordId, encrypted);
-                    ui.tagModal.classList.add('hidden');
-                    currentEditRecordId = null;
+                    await saveRecordingToDB(currentEditRecordId, await encryptData({ date: r.date, transcript: r.transcript, summary: r.summary, keywords: r.keywords, audioMime: r.audioMime, audioData: r.audioData }));
+                    ui.tagModal.classList.add('hidden'); currentEditRecordId = null;
                     renderRecordings(ui.searchInput.value.toLowerCase());
-                } catch(err) {
-                    alert("Fehler beim Speichern der Tags: " + err.message);
-                }
+                } catch(err) { alert("Speicherfehler: " + err.message); }
             }
         };
 
-        // Event Delegation für Löschen- und Tag-Buttons
         ui.recordingsList.addEventListener('click', async (e) => {
             const deleteBtn = e.target.closest('.delete-btn');
             if (deleteBtn) {
-                const id = deleteBtn.getAttribute('data-id');
-                if (confirm("Möchtest du diese Aufnahme wirklich unwiderruflich löschen?")) {
-                    try {
-                        await deleteRecordingFromDB(id);
-                        await refreshDataAndUI();
-                    } catch (err) {
-                        alert("Fehler beim Löschen: " + err.message);
-                    }
-                }
-                return;
+                if (confirm("Wirklich unwiderruflich löschen?")) {
+                    await deleteRecordingFromDB(deleteBtn.getAttribute('data-id'));
+                    await refreshDataAndUI();
+                } return;
             }
-
             const editTagBtn = e.target.closest('.add-tag-btn');
-            if (editTagBtn) {
-                const id = editTagBtn.getAttribute('data-edit-id');
-                openTagModal(id);
-            }
+            if (editTagBtn) openTagModal(editTagBtn.getAttribute('data-edit-id'));
         });
 
         ui.searchInput.addEventListener('input', (e) => renderRecordings(e.target.value.toLowerCase()));
 
         ui.exportBtn.addEventListener('click', async () => {
             const rawData = await loadAllFromDB();
-            if(rawData.length === 0) { alert("Die Datenbank ist leer."); return; }
-            
+            if(rawData.length === 0) return alert("Datenbank leer.");
             const exportData = rawData.map(item => ({ id: item.id, iv: bufferToBase64(item.iv), data: bufferToBase64(item.data) }));
-            const url = URL.createObjectURL(new Blob([JSON.stringify(exportData)], { type: "application/json" }));
-            const a = document.createElement('a'); a.href = url; a.download = `AudioNotizen_Backup.json`; a.click();
-            URL.revokeObjectURL(url);
+            const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(exportData)], { type: "application/json" }));
+            a.download = `AudioNotizen_Backup.json`; a.click();
         });
 
         ui.importFile.addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-
+            const file = e.target.files[0]; if (!file) return;
             const reader = new FileReader();
             reader.onload = async (event) => {
                 try {
                     const importedData = JSON.parse(event.target.result);
-                    if (!confirm("Achtung: Dies überschreibt deine aktuellen Daten. Fortfahren?")) return;
-                    
+                    if (!confirm("Bestehende Daten überschreiben?")) return;
                     await clearDB();
-                    let successCount = 0;
-
                     for (const item of importedData) {
                         try {
                             const record = { id: item.id, iv: new Uint8Array(base64ToBuffer(item.iv)), cipherBuffer: base64ToBuffer(item.data) };
                             if (!(await decryptData(record.iv, record.cipherBuffer))) throw new Error("Falsches Passwort");
                             await saveRecordingToDB(record.id, record);
-                            successCount++;
-                        } catch(itemErr) {}
+                        } catch(err) {}
                     }
-                    alert(`Import abgeschlossen. ${successCount} Einträge wiederhergestellt.`);
-                    await refreshDataAndUI();
-                } catch (err) { alert("Import fehlgeschlagen. Passwort falsch oder Datei defekt."); }
-            };
-            reader.readAsText(file);
-            e.target.value = ''; 
+                    alert("Import abgeschlossen."); await refreshDataAndUI();
+                } catch (err) { alert("Fehler beim Import."); }
+            }; reader.readAsText(file); e.target.value = ''; 
         });
 
         async function refreshDataAndUI() {
@@ -723,66 +565,29 @@
 
         function renderRecordings(filterQuery = "") {
             ui.recordingsList.innerHTML = "";
-            const filteredData = inMemoryData.filter(item => {
-                if (!filterQuery) return true;
-                return `${item.transcript} ${item.summary} ${item.keywords.join(' ')}`.toLowerCase().includes(filterQuery);
-            });
+            const filteredData = inMemoryData.filter(item => !filterQuery || `${item.transcript} ${item.summary} ${item.keywords.join(' ')}`.toLowerCase().includes(filterQuery));
 
             if (filteredData.length === 0) {
-                ui.recordingsList.innerHTML = `
-                    <div class="empty-state">
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                        </svg>
-                        <p class="font-medium">Keine Aufnahmen gefunden.</p>
-                    </div>`;
-                return;
+                ui.recordingsList.innerHTML = `<div class="empty-state"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg><p class="font-medium">Keine Aufnahmen gefunden.</p></div>`; return;
             }
 
             filteredData.forEach(item => {
                 const dateStr = new Date(item.date).toLocaleString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
                 const audioUrl = URL.createObjectURL(new Blob([base64ToBuffer(item.audioData)], { type: item.audioMime }));
                 
-                const card = document.createElement('div');
-                card.className = "record-card";
+                const card = document.createElement('div'); card.className = "record-card";
                 card.innerHTML = `
                     <div class="card-header">
-                        <div class="date-badge">
-                            <div class="icon-circle">
-                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                            </div>
-                            <span>${dateStr}</span>
-                        </div>
+                        <div class="date-badge"><div class="icon-circle"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg></div><span>${dateStr}</span></div>
                         <div class="tags">
                             ${item.keywords.map(k => `<span class="tag">#${k}</span>`).join('')}
                             <button class="add-tag-btn" data-edit-id="${item.id}" title="Tags bearbeiten">+ EDIT</button>
                         </div>
-                        <button class="delete-btn" data-id="${item.id}" title="Aufnahme löschen">
-                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                        </button>
+                        <button class="delete-btn" data-id="${item.id}" title="Aufnahme löschen"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
                     </div>
-                    
-                    <div>
-                        <h3 class="section-title">
-                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                            Zusammenfassung
-                        </h3>
-                        <p class="font-medium text-sm">${item.summary}</p>
-                    </div>
-                    
-                    <div>
-                        <h3 class="section-title">
-                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
-                            Original Transkript
-                        </h3>
-                        <p class="transcript-text">"${item.transcript}"</p>
-                    </div>
-                    
-                    <div class="audio-wrapper">
-                        <audio controls src="${audioUrl}"></audio>
-                    </div>
+                    <div><h3 class="section-title"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>Zusammenfassung</h3><p class="font-medium text-sm">${item.summary}</p></div>
+                    <div><h3 class="section-title"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /></svg>Original Transkript</h3><p class="transcript-text">"${item.transcript}"</p></div>
+                    <div class="audio-wrapper"><audio controls src="${audioUrl}"></audio></div>
                 `;
                 ui.recordingsList.appendChild(card);
             });

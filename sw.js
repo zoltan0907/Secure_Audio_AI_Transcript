@@ -1,6 +1,6 @@
-const CACHE_NAME = 'audio-ai-es-v3';
+// Erhöhe diese Versionsnummer bei JEDER Änderung an der index.html!
+const CACHE_NAME = 'audio-ai-es-v4'; 
 
-// Wir cachen hier nur unsere eigenen, lokalen Dateien!
 const urlsToCache = [
     './',
     './index.html',
@@ -8,20 +8,36 @@ const urlsToCache = [
 ];
 
 self.addEventListener('install', event => {
+    // skipWaiting erzwingt, dass der neue Service Worker sofort die Kontrolle übernimmt
+    self.skipWaiting();
     event.waitUntil(
         caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+    );
+});
+
+// NEU: Alte Caches beim Aktivieren löschen
+self.addEventListener('activate', event => {
+    event.waitUntil(
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.map(cacheName => {
+                    // Lösche alle Caches, die nicht dem aktuellen CACHE_NAME entsprechen
+                    if (cacheName !== CACHE_NAME) {
+                        console.log('Alter Cache wird gelöscht:', cacheName);
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
+        }).then(() => self.clients.claim()) // Übernimmt sofort die Kontrolle über alle offenen Tabs
     );
 });
 
 self.addEventListener('fetch', event => {
     event.respondWith(
         caches.match(event.request).then(response => {
-            // 1. Wenn die Datei im Cache ist, gib sie zurück
             if (response) {
-                return response;
+                return response; // Aus dem Cache laden
             }
-            
-            // 2. Ansonsten lade sie normal aus dem Netz (z.B. Tailwind oder die KI-Modelle)
             return fetch(event.request).catch(err => {
                 console.log('Ressource offline nicht verfügbar:', event.request.url);
             });
