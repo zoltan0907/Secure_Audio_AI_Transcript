@@ -168,6 +168,10 @@
         .tags { display: flex; flex-wrap: wrap; gap: 0.25rem; justify-content: flex-end; }
         .tag { background: var(--tag-bg); color: var(--tag-text); border: 1px solid #dbeafe; font-size: 0.65rem; padding: 0.2rem 0.5rem; border-radius: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
         
+        .delete-btn { background: none; border: none; color: var(--text-light); cursor: pointer; padding: 0.25rem; border-radius: 0.25rem; transition: all 0.2s; display: flex; align-items: center; justify-content: center; margin-left: auto; }
+        .delete-btn:hover { background: #fee2e2; color: var(--danger); }
+        .delete-btn svg { width: 1.1rem; height: 1.1rem; }
+
         .section-title { font-size: 0.7rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.25rem; display: flex; align-items: center; gap: 0.25rem; }
         .section-title svg { width: 0.875rem; height: 0.875rem; }
         
@@ -382,6 +386,15 @@
             });
         }
 
+        async function deleteRecordingFromDB(id) {
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction("recordings", "readwrite");
+                const request = tx.objectStore("recordings").delete(id);
+                tx.oncomplete = () => resolve();
+                tx.onerror = () => reject(tx.error);
+            });
+        }
+
         async function initAIModels() {
             try {
                 ui.aiStatus.innerText = "Lade Transkriptions-Modell (Whisper)...";
@@ -510,6 +523,22 @@
             }
         });
 
+        // Event Delegation für dynamisch erstellte Löschen-Buttons
+        ui.recordingsList.addEventListener('click', async (e) => {
+            const deleteBtn = e.target.closest('.delete-btn');
+            if (deleteBtn) {
+                const id = deleteBtn.getAttribute('data-id');
+                if (confirm("Möchtest du diese Aufnahme wirklich unwiderruflich löschen?")) {
+                    try {
+                        await deleteRecordingFromDB(id);
+                        await refreshDataAndUI();
+                    } catch (err) {
+                        alert("Fehler beim Löschen: " + err.message);
+                    }
+                }
+            }
+        });
+
         ui.searchInput.addEventListener('input', (e) => renderRecordings(e.target.value.toLowerCase()));
 
         ui.exportBtn.addEventListener('click', async () => {
@@ -598,6 +627,9 @@
                         <div class="tags">
                             ${item.keywords.map(k => `<span class="tag">#${k}</span>`).join('')}
                         </div>
+                        <button class="delete-btn" data-id="${item.id}" title="Aufnahme löschen">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                        </button>
                     </div>
                     
                     <div>
