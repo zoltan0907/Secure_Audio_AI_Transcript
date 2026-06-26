@@ -54,6 +54,9 @@
         .items-center { align-items: center; }
         .justify-between { justify-content: space-between; }
         .gap-2 { gap: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+        .mt-2 { margin-top: 0.5rem; }
 
         /* --- KOMPONENTEN --- */
         .card { background: var(--bg-card); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); margin-bottom: 1.5rem; }
@@ -148,6 +151,15 @@
             <button id="login-btn" class="btn btn-primary" style="width: 100%;">Entschlüsseln & Öffnen</button>
             <div class="text-danger text-xs font-medium" style="margin-top: 1rem;">
                 Achtung: Wenn du dieses Passwort vergisst, sind deine Daten für immer verloren!
+            </div>
+            
+            <div style="border-top: 1px solid var(--border-color); padding-top: 1.5rem; margin-top: 1.5rem;">
+                <p class="text-muted text-xs" style="margin-bottom: 0.75rem;">Hast du ein Backup? Lade es hier sicher wieder in den Browser.</p>
+                <label class="btn btn-outline" style="width: 100%; font-size: 0.8rem; cursor: pointer;">
+                    <svg class="w-4 h-4" style="margin-right: 0.5rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                    Backup laden (Restore)
+                    <input type="file" id="login-restore-file" class="hidden" accept=".json">
+                </label>
             </div>
         </div>
     </div>
@@ -264,6 +276,7 @@
             searchInput: document.getElementById('search-input'),
             exportBtn: document.getElementById('export-btn'),
             importFile: document.getElementById('import-file'),
+            loginRestoreFile: document.getElementById('login-restore-file'),
             settingsBtn: document.getElementById('settings-btn'),
             apiKeyModal: document.getElementById('api-key-modal'),
             apiKeyInput: document.getElementById('api-key-input'),
@@ -347,14 +360,12 @@
                 request.onupgradeneeded = (e) => {
                     const db = e.target.result;
                     if (!db.objectStoreNames.contains("recordings")) db.createObjectStore("recordings", { keyPath: "id" });
-                    // Optional: Alte tasks Tabelle könnte hier gelöscht werden, wir ignorieren sie einfach.
                 };
                 request.onsuccess = (e) => resolve(e.target.result);
                 request.onerror = (e) => reject(e.target.error);
             });
         }
 
-        // --- RECORDING DB HELPERS ---
         async function saveRecordingToDB(id, encryptedObj) {
             return new Promise((resolve, reject) => {
                 const tx = db.transaction("recordings", "readwrite");
@@ -386,7 +397,6 @@
             });
         }
 
-        // --- GEMINI API HELPERS ---
         async function fetchWithRetry(url, options, retries = 3) {
             const delays = [2000, 4000, 8000];
             for (let i = 0; i < retries; i++) {
@@ -400,8 +410,6 @@
                 }
             }
         }
-
-        // --- NEW: INTELLIGENTE PIPELINE DIREKT AUF RECORDINGS ---
         
         async function saveNewRecording(blob) {
             ui.recordStatus.innerText = "Speichere Audio lokal...";
@@ -478,7 +486,8 @@
                             }
                         };
 
-                        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+                        // GEMINI 3.5 FLASH UPDATE (wie vom User gewünscht)
+                        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`;
                         const result = await fetchWithRetry(GEMINI_API_URL, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -511,7 +520,6 @@
                 isProcessingQueue = false;
             }
         }
-
 
         // --- EVENTS & UI ---
         ui.loginBtn.addEventListener('click', async () => {
@@ -596,10 +604,7 @@
                 }
             }
             
-            // UI aktualisieren, falls sich Status geändert haben
             if (needsUpdate) renderRecordings(ui.searchInput.value.toLowerCase());
-            
-            // Verarbeitungsschleife starten
             await processPendingRecordings();
             ui.processQueueBtn.disabled = false;
         });
@@ -708,31 +713,77 @@
 
         ui.exportBtn.addEventListener('click', async () => {
             const rawData = await loadAllFromDB();
-            if(rawData.length === 0) return alert("Datenbank leer.");
-            const exportData = rawData.map(item => ({ id: item.id, iv: bufferToBase64(item.iv), data: bufferToBase64(item.data) }));
-            const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(exportData)], { type: "application/json" }));
-            a.download = `AudioNotizen_Backup.json`; a.click();
+            
+            const exportData = {
+                version: 1,
+                apiKey: {
+                    iv: localStorage.getItem('apiKeyIv') || null,
+                    cipher: localStorage.getItem('encryptedApiKey') || null
+                },
+                recordings: rawData.map(item => ({ id: item.id, iv: bufferToBase64(item.iv), data: bufferToBase64(item.data) }))
+            };
+            
+            const a = document.createElement('a'); 
+            a.href = URL.createObjectURL(new Blob([JSON.stringify(exportData)], { type: "application/json" }));
+            a.download = `AudioNotizen_Backup.json`; 
+            a.click();
         });
 
-        ui.importFile.addEventListener('change', async (e) => {
-            const file = e.target.files[0]; if (!file) return;
+        async function handleRestoreFile(file, isFromLogin) {
+            if (!file) return;
             const reader = new FileReader();
             reader.onload = async (event) => {
                 try {
                     const importedData = JSON.parse(event.target.result);
-                    if (!confirm("Bestehende Daten überschreiben?")) return;
+                    if (!confirm("Achtung: Dies überschreibt alle aktuellen Daten auf diesem Gerät. Fortfahren?")) return;
+                    
+                    if (!db) db = await initDB();
                     await clearDB();
-                    for (const item of importedData) {
+
+                    let recordings = [];
+                    let apiKeyObj = null;
+
+                    if (Array.isArray(importedData)) {
+                        recordings = importedData; // Fallback für alte Backups (Legacy Format)
+                    } else if (importedData.version === 1) {
+                        recordings = importedData.recordings || [];
+                        apiKeyObj = importedData.apiKey;
+                    } else {
+                        throw new Error("Unbekanntes Backup-Format");
+                    }
+
+                    for (const item of recordings) {
                         try {
                             const record = { id: item.id, iv: new Uint8Array(base64ToBuffer(item.iv)), cipherBuffer: base64ToBuffer(item.data) };
-                            if (!(await decryptData(record.iv, record.cipherBuffer))) throw new Error("Falsches Passwort");
                             await saveRecordingToDB(record.id, record);
                         } catch(err) {}
                     }
-                    alert("Import abgeschlossen."); await refreshDataAndUI();
-                    processPendingRecordings(); // Verarbeite eventuell unfertige importierte Tasks
-                } catch (err) { alert("Fehler beim Import."); }
-            }; reader.readAsText(file); e.target.value = ''; 
+
+                    if (apiKeyObj && apiKeyObj.iv && apiKeyObj.cipher) {
+                        localStorage.setItem('apiKeyIv', apiKeyObj.iv);
+                        localStorage.setItem('encryptedApiKey', apiKeyObj.cipher);
+                    }
+
+                    alert("Restore erfolgreich abgeschlossen! " + (isFromLogin ? "Bitte logge dich nun mit deinem Master-Passwort ein." : ""));
+                    
+                    if (!isFromLogin) {
+                        await loadApiKey();
+                        await refreshDataAndUI();
+                        processPendingRecordings();
+                    }
+                } catch (err) { alert("Fehler beim Restore: " + err.message); }
+            }; 
+            reader.readAsText(file);
+        }
+
+        ui.importFile.addEventListener('change', (e) => {
+            handleRestoreFile(e.target.files[0], false);
+            e.target.value = ''; 
+        });
+
+        ui.loginRestoreFile.addEventListener('change', (e) => {
+            handleRestoreFile(e.target.files[0], true);
+            e.target.value = ''; 
         });
 
         async function refreshDataAndUI() {
@@ -776,7 +827,6 @@
                 const card = document.createElement('div'); 
                 card.className = "record-card";
                 
-                // HTML für den Header (Datum + Buttons)
                 let headerHtml = `
                     <div class="card-header">
                         <div class="date-badge">
@@ -796,10 +846,7 @@
                     </div>
                 `;
 
-                // Audio Player HTML (immer sichtbar!)
                 let audioHtml = `<div class="audio-wrapper"><audio controls src="${audioUrl}"></audio></div>`;
-                
-                // Dynamischer Inhalt, basierend auf dem Status
                 let contentHtml = '';
 
                 if (item.status === 'pending') {
@@ -832,7 +879,6 @@
                         </div>
                     `;
                 } else {
-                    // Status ist 'done' (oder alte Aufnahmen ohne Status)
                     let tagsHtml = item.keywords && item.keywords.length > 0 
                         ? item.keywords.map(k => `<span class="tag">#${k}</span>`).join('') 
                         : '';
@@ -847,7 +893,6 @@
                     `;
                 }
 
-                // Alles zusammenbauen
                 card.innerHTML = headerHtml + contentHtml + audioHtml;
                 ui.recordingsList.appendChild(card);
             });
